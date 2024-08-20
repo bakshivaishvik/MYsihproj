@@ -29,32 +29,43 @@ class Employee(db.Model):
     position = db.Column(db.String(20), nullable=False)
     username = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(20), nullable=False)
+    
     def __repr__(self):
         return f'<Employee {self.name}>'
 with app.app_context():
     
     db.create_all()
+    
+    
+
   
 @app.route('/')
 def home():
     if 'username' in session:
-        return redirect(url_for('dashboard'))  # Redirect to dashboard if logged in
-    return render_template('login.html')
+        return   # Redirect to dashboard if logged in
+    return 
+    
 
 @app.route('/login', methods=['POST'])
 def login():
+    
+    
     data = request.get_json()
     username=data['username']
     password=data['password']
     user = Employee.query.filter_by(username=username).first()
-    print(user.password)
+    print(username,password,user.password)
     
     if user and (user.password == password) and username=='admin':
         
-        return redirect(url_for('get_employees'))
+        return jsonify({'message': 'login successful'}), 200
+    
+    elif user and (user.password == password):
+        return jsonify({'message': 'login successful'}), 202
+    
     else:
         
-        return redirect(url_for('login'))
+        return jsonify({'message': 'login unsuccessful'}), 306
 
 @app.route('/logout')
 def logout():
@@ -62,12 +73,7 @@ def logout():
     flash('You have been logged out', 'info')
     return redirect(url_for('home'))
 
-@app.route('/dashboard')
-def dashboard():
-    if 'username' not in session:
-        flash('Please log in to access this page', 'warning')
-        return redirect(url_for('home'))
-    return 'Welcome to the dashboard!'
+
 
 
 
@@ -101,4 +107,8 @@ def delete_employee(employee_id):
 
 if __name__ == '__main__':
     context = (r"C:\Users\Sonu\server.crt", r"C:\Users\Sonu\server.key")
-    app.run(host = '192.168.0.209',port = 5000,ssl_context=context)
+    app.run(host = '192.168.0.110',port = 5001,ssl_context=context)
+    new_employee = Employee(id=1,name='abhinith', position='admin', username='admin', password='admin123')
+    db.session.add(new_employee)
+    db.session.commit()
+

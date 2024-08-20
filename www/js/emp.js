@@ -1,6 +1,6 @@
 async function fetchEmployees() {
             try {
-                const response = await fetch('https://192.168.0.209:5000/employees');
+                const response = await fetch('https://192.168.0.110:5001/employees');
                 const employees = await response.json();
                 const employeeList = document.getElementById('employeeList');
                 employeeList.innerHTML = ''; // Clear the list
@@ -31,7 +31,7 @@ async function fetchEmployees() {
             }
 
             try {
-                const response = await fetch('https://192.168.0.209:5000/employees', {
+                const response = await fetch('https://192.168.0.110:5001/employees', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -68,4 +68,7 @@ async function fetchEmployees() {
         }
 
         window.onload = fetchEmployees; // Fetch employees when the page loads
+
+
+
 
