@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request, redirect, url_for, f
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import datetime
 app = Flask(__name__)
 CORS(app,resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
@@ -21,7 +22,8 @@ with app.app_context():
     db2.create_all()
 '''
 db = SQLAlchemy(app)
-
+lat=17.384384
+long=78.353006
 # Define a model for the database
 class Employee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,6 +31,20 @@ class Employee(db.Model):
     position = db.Column(db.String(20), nullable=False)
     username = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(20), nullable=False)
+    
+    
+    
+    
+class LogInOut(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    dist =db.Column(db.DOUBLE, nullable=False)
+    time = db.Column(db.DATETIME(),nullable=False)
+    status = db.Column(db.BOOLEAN(),default=False)
+
+
+
+    
+        
     
     def __repr__(self):
         return f'<Employee {self.name}>'
@@ -78,7 +94,15 @@ def logout():
 
 
 ######################################################################
-
+@app.route('/LogInOut', methods=['GET'])
+def get_logins():
+    new_login = LogInOut(id=1,dist=0,time=datetime.datetime.now(),status=True)
+    db.session.add(new_login)
+    db.session.commit()
+    logins=LogInOut.query.all()
+    
+    res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status} for emp in logins]
+    return jsonify(res)
 
     
 
@@ -87,7 +111,9 @@ def logout():
 @app.route('/employees', methods=['GET'])
 def get_employees():
     employees = Employee.query.all()
+    logins=LogInOut.query.all()
     result = [{'id': emp.id, 'name': emp.name, 'position': emp.position} for emp in employees]
+    res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status} for emp in logins]
     return jsonify(result)
 
 @app.route('/employees', methods=['POST'])
@@ -109,6 +135,9 @@ if __name__ == '__main__':
     context = (r"C:\Users\Sonu\server.crt", r"C:\Users\Sonu\server.key")
     app.run(host = '192.168.0.110',port = 5001,ssl_context=context)
     new_employee = Employee(id=1,name='abhinith', position='admin', username='admin', password='admin123')
+    new_login = LogInOut(id=1,dist=0,time=datetime.datetime(),status=True)
     db.session.add(new_employee)
+    #db.session.add(new_login)
     db.session.commit()
+    
 
