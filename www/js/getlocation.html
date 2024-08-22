@@ -3,22 +3,28 @@
 <head>
     <title>Cordova Geolocation Example</title>
 </head>
-<script src="geolocation.js"></script>
-<body>
-<h1>Get Current Location</h1>
+<body style="font-family: Arial, sans-serif; background-color: #f0f8ff; color: #333; padding: 20px; text-align: center;">
 
-<!-- Button to trigger the geolocation function -->
-<button onclick="getLocation()">Get Location</button>
+    <h1 style="color: #1e90ff;">Get Current Location</h1>
 
-<!-- Placeholder for displaying location information -->
-<div id="location-info"></div>
+    <!-- Button to trigger the geolocation function -->
+    <button onclick="getLocation()" style="background-color: #1e90ff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+        Get Location
+    </button>
 
-<!--<script src="cordova.js"></script>Make sure to include Cordova -->
- <!-- Link to your JavaScript file -->
-<div class="logout-container">
-    <h1>Logout</h1>
-    <button id="logoutButton">Logout</button>
-</div>
-<script src="geolocation.js"></script>
+    <!-- Placeholder for displaying location information -->
+    <div id="location-info" style="margin-top: 20px; padding: 10px; border: 1px solid #1e90ff; border-radius: 5px; background-color: #ffffff; display: inline-block; width: 80%; text-align: left;">
+        <!-- Location info will be displayed here -->
+    </div>
+
+    <!-- Logout section -->
+    <div class="logout-container" style="margin-top: 40px;">
+        <h1 style="color: #1e90ff;">Logout</h1>
+        <button id="logoutButton" style="background-color: #ff4500; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+            Logout
+        </button>
+    </div>
+
+    <script src="geolocation.js"></script>
 </body>
 </html>
