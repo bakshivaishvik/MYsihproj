@@ -1,3 +1,20 @@
+document.getElementById('logoutButton').addEventListener('click', async function() {
+            try {
+                // Make a request to the logout route on the server
+
+
+
+                    // Redirect to the login page after successful logout
+                    window.location.href = 'logout.html';
+
+
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during logout. Please try again.');
+            }
+        });
+
 async function fetchEmployees() {
             try {
                 const response = await fetch('https://192.168.0.110:5001/employees');
@@ -52,7 +69,7 @@ async function fetchEmployees() {
 
         async function deleteEmployee(employeeId) {
             try {
-                const response = await fetch(`https://192.168.0.209/employees/${employeeId}`, {
+                const response = await fetch(`https://192.168.0.110:5001/employees/${employeeId}`, {
                     method: 'DELETE'
                 });
 
@@ -67,7 +84,9 @@ async function fetchEmployees() {
             }
         }
 
-        window.onload = fetchEmployees; // Fetch employees when the page loads
+         // Fetch employees when the page loads
+
+        window.onload = fetchEmployees;
 
 
 

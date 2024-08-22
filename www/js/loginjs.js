@@ -14,6 +14,7 @@ async function checkValid() {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({ username,password })
+                            //console.log(username)
                         });
 
                         if (response.status == 200) {
@@ -24,7 +25,29 @@ async function checkValid() {
 
                         }else if(response.status == 202){
                             alert('login successful');
-                            window.location.href = 'js/getlocation.html';
+                            console.log(username)
+                            const url = `https://192.168.0.110:5001/employees/${username}`;
+                            console.log(url)
+                            fetch(url)
+                              .then(response => {
+                                console.log('Response status:', response.status);
+                                if (!response.ok) {
+                                  throw new Error('Employee not found');
+                                }
+                                return response.json();
+                              })
+                              .then(data => {
+                                // Handle the employee data here
+                                console.log('Employee data:', data);
+                                const Id = data;
+                                window.location.href = `js/getlocation.html?userId=${Id}`;
+                              })
+                              .catch(error => {
+                                // Handle errors here
+                                console.error('Error:', error);
+                              });
+
+
                         }
 
                          else {

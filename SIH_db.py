@@ -2,7 +2,7 @@ from flask import Flask, jsonify, render_template, request, redirect, url_for, f
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-import datetime
+from datetime import datetime
 app = Flask(__name__)
 CORS(app,resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
@@ -24,6 +24,7 @@ with app.app_context():
 db = SQLAlchemy(app)
 lat=17.384384
 long=78.353006
+
 # Define a model for the database
 class Employee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,9 +35,10 @@ class Employee(db.Model):
     
     
     
-    
+
 class LogInOut(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    sno= db.Column(db.Integer,primary_key=True,autoincrement=True)
+    id = db.Column(db.Integer)
     dist =db.Column(db.DOUBLE, nullable=False)
     time = db.Column(db.DATETIME(),nullable=False)
     status = db.Column(db.BOOLEAN(),default=False)
@@ -50,6 +52,7 @@ class LogInOut(db.Model):
         return f'<Employee {self.name}>'
 with app.app_context():
     
+    #db.drop_all()  # Optionally drop all tables if you want a fresh start
     db.create_all()
     
     
@@ -64,13 +67,39 @@ def home():
 
 @app.route('/login', methods=['POST'])
 def login():
+    #new_employee = Employee(id=1,name='abhinith', position='admin', username='admin', password='admin123')
+    #db.session.add(new_employee)
+    #db.session.add(new_login)
+    
+    #db.session.commit()
+    
+    data = request.get_json()
+    username=data['username']
+    password=data['password']
+    user = Employee.query.filter_by(username=username).first()
+    print(user)
+    print(username,password,user.password)
+    
+    if user and (user.password == password) and username=='admin':
+        
+        return jsonify({'message': 'login successful'}), 200
+    
+    elif user and (user.password == password):
+        return jsonify({'message': 'login successful'}), 202
+    
+    else:
+        
+        return jsonify({'message': 'login unsuccessful'}), 306
+    
+@app.route('/login', methods=['GET'])
+def get_login():
     
     
     data = request.get_json()
     username=data['username']
     password=data['password']
     user = Employee.query.filter_by(username=username).first()
-    print(username,password,user.password)
+    #print(username,password,user.password)
     
     if user and (user.password == password) and username=='admin':
         
@@ -104,16 +133,34 @@ def get_logins():
     res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status} for emp in logins]
     return jsonify(res)
 
+@app.route('/LogInOut', methods=['POST'])
+def add_employees():
+    data = request.get_json()
     
+    new_employee = LogInOut(id=data['Id'],dist=data['dist'], time=datetime.utcfromtimestamp(data['time']/1000),status=True)#to be changed
+    #print(type(time))
+    
+    db.session.add(new_employee)
+    db.session.commit()
+    return jsonify({'message': 'updated'}), 201
 
+@app.route('/employees/<string:username>', methods=['GET'])
+def get_employee(username):
+    # Query to get the specific employee by id
+    print(username)
+    employee = Employee.query.filter_by(username=username).first()
 
+    if employee is None:
+        return jsonify({"error": "Employee not found"}), 404
+
+    return jsonify(employee.id), 200
 
 @app.route('/employees', methods=['GET'])
 def get_employees():
     employees = Employee.query.all()
-    logins=LogInOut.query.all()
+    #logins=LogInOut.query.all()
     result = [{'id': emp.id, 'name': emp.name, 'position': emp.position} for emp in employees]
-    res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status} for emp in logins]
+    #res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status} for emp in logins]
     return jsonify(result)
 
 @app.route('/employees', methods=['POST'])
@@ -135,7 +182,7 @@ if __name__ == '__main__':
     context = (r"C:\Users\Sonu\server.crt", r"C:\Users\Sonu\server.key")
     app.run(host = '192.168.0.110',port = 5001,ssl_context=context)
     new_employee = Employee(id=1,name='abhinith', position='admin', username='admin', password='admin123')
-    new_login = LogInOut(id=1,dist=0,time=datetime.datetime(),status=True)
+    #new_login = LogInOut(sno=0;id=1,dist=0,time=datetime.now(),status=True)
     db.session.add(new_employee)
     #db.session.add(new_login)
     db.session.commit()

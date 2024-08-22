@@ -41,16 +41,49 @@ function onSuccess(position) {
         return deg * (Math.PI/180);
     }
 
+
     // Example usage:
-    const distance = getDistanceFromLatLonInKm(latitude, longitude, 17.384384, 78.353006)*1000;
-    console.log("Distance:", distance, "m");
+    const dist = getDistanceFromLatLonInKm(latitude, longitude, 17.384384, 78.353006)*1000;
+
+    console.log("Distance:", dist, "m");
+    async function pushdata(Id,dist,time){
+    try {
+                    const response = await fetch('https://192.168.0.110:5001/LogInOut', {
+                        method: 'POST', // Use POST method to send data
+                        headers: {
+                            'Content-Type': 'application/json', // Set the content type to JSON
+                        },
+                        body: JSON.stringify({ Id,dist, time }), // Convert the data to a JSON string
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+
+                    const result = await response.json(); // Parse the JSON response
+                    console.log('Data successfully pushed:', result);
+                    return result;
+                } catch (error) {
+                    console.error('Error pushing data to server:', error);
+                    throw error; // Re-throw the error after logging it
+                }
+        }
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        const Id = getQueryParam('userId');
+        console.log(Id)
+
+    pushdata(Id,dist,timestamp);
+
 
     var locationInfo = `
             <p>Latitude: ${latitude}</p>
             <p>Longitude: ${longitude}</p>
             <p>Accuracy: ${accuracy} meters</p>
             <p>Timestamp: ${new Date(timestamp)}</p>
-            <p>distance: ${distance} meters</p>
+            <p>distance: ${dist} meters</p>
         `;
 
     document.getElementById('location-info').innerHTML = locationInfo;
@@ -60,4 +93,19 @@ function onError(error) {
     var errorMessage = `Error (${error.code}): ${error.message}`;
     document.getElementById('location-info').innerHTML = errorMessage;
 }
+document.getElementById('logoutButton').addEventListener('click', async function() {
+            try {
+                // Make a request to the logout route on the server
 
+
+
+                    // Redirect to the login page after successful logout
+                    window.location.href = 'logout.html';
+
+
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during logout. Please try again.');
+            }
+        });
