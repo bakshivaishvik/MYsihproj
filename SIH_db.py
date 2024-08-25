@@ -45,11 +45,14 @@ def model_to_dict(model_instance):
     
 
 class LogInOut(db.Model):
-    sno= db.Column(db.Integer,primary_key=True,autoincrement=True)
+    sno = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id = db.Column(db.Integer)
-    dist =db.Column(db.DOUBLE, nullable=False)
-    time = db.Column(db.DATETIME(),nullable=False)
-    status = db.Column(db.BOOLEAN(),default=False)
+    dist = db.Column(db.Float, nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.Boolean, default=False)
+
+    def __repr__(self):
+        return f'<Employee {self.name}>'
     
     
 @app.route('/LogInOut/<int:id>', methods=['GET'])
@@ -72,8 +75,7 @@ def get_previous_employee(id):
     
         
     
-    def __repr__(self):
-        return f'<Employee {self.name}>'
+
 with app.app_context():
     
     #db.drop_all()  # Optionally drop all tables if you want a fresh start
@@ -91,28 +93,14 @@ def home():
 
 @app.route('/login', methods=['POST'])
 def login():
-    #new_employee = Employee(id=1,name='abhinith', position='admin', username='admin', password='admin123')
-    #db.session.add(new_employee)
-    #db.session.add(new_login)
-    
-    #db.session.commit()
-    
     data = request.get_json()
-    username=data['username']
-    password=data['password']
+    username = data['username']
+    password = data['password']
     user = Employee.query.filter_by(username=username).first()
-    #print(user)
-    #print(username,password,user.password)
-    
-    if user and (user.password == password) and username=='admin':
-        
-        return jsonify({'message': 'login successful'}), 200
-    
-    elif user and (user.password == password):
-        return jsonify({'message': 'login successful'}), 202
-    
+
+    if user and check_password_hash(user.password, password):
+        return jsonify({'message': 'login successful'}), 200 if username == 'admin' else 202
     else:
-        
         return jsonify({'message': 'login unsuccessful'}), 306
     
 @app.route('/login', methods=['GET'])
@@ -190,7 +178,7 @@ def get_employees():
 @app.route('/employees', methods=['POST'])
 def add_employee():
     data = request.get_json()
-    new_employee = Employee(id=data['Id'],name=data['name'], position=data['position'], username=data['uId'], password=data['pass'])
+    new_employee = Employee(id=data['Id'],name=data['name'], position=data['position'], username=data['uId'], password=generate_password_hash(data['pass']))
     db.session.add(new_employee)
     db.session.commit()
     return jsonify({'message': 'Employee added successfully'}), 201
@@ -202,13 +190,22 @@ def delete_employee(employee_id):
     db.session.commit()
     return jsonify({'message': 'Employee deleted successfully'})
 
-if __name__ == '__main__':
-    context = (r"C:\Users\Sonu\server.crt", r"C:\Users\Sonu\server.key")
-    app.run(host = '192.168.0.110',port = 5001,ssl_context=context)
-    new_employee = Employee(id=1,name='abhinith', position='admin', username='admin', password='admin123')
-    #new_login = LogInOut(sno=0;id=1,dist=0,time=datetime.now(),status=True)
-    db.session.add(new_employee)
-    #db.session.add(new_login)
-    db.session.commit()
+if __name__ == '__main__':    
+    context = (
+        r"C:\Users\Sonu\server.crt",  
+        r"C:\Users\Sonu\server.key"
+    )
+    with app.app_context():
+        admin = Employee.query.filter_by(username='admin').first()
+        if not admin:
+            new_employee = Employee(
+                id=1,
+                name='abhinith',
+                position='admin',
+                username='admin',
+                password=generate_password_hash('admin123')
+            )
+            db.session.add(new_employee)
+            db.session.commit()
     
-
+    app.run(host='192.168.0.110', port=5001, ssl_context=context)
