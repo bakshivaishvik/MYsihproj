@@ -3,68 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirect Page</title>
+    <title>Geo-Attendance/Admin-Login</title>
     <style>
-        /* Simple styling for the buttons */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f4f4f4;
+            margin: 0;
+            background-color: #e9ecef;
+            color: #212529;
         }
 
-        .button-container {
+        .container {
             text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+
+        .container h1 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: #343a40;
         }
 
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             margin: 10px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
             border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
+            border-radius: 8px;
+            background-color: #28a745;
+            color: #ffffff;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            background-color: #1e7e34;
+            transform: translateY(0);
+        }
+
+        .logout-container {
+            margin-top: 40px;
+        }
+
+        .logout-container h1 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #dc3545;
+        }
+
+        .logout-container button {
+            background-color: #dc3545;
+        }
+
+        .logout-container button:hover {
+            background-color: #c82333;
+        }
+
+        .logout-container button:active {
+            background-color: #bd2130;
         }
     </style>
 </head>
 <body>
-<div class="button-container">
-    <button id="page1-btn">view employees</button>
-    <button id="page2-btn">add employees</button>
+
+<div class="container">
+    <h1>Employee Management</h1>
+    <button id="view-employees-btn">View Employees</button>
+    <button id="add-employees-btn">Add Employees</button>
+    <button id="add-locations-btn">Add Locations</button>
 </div>
 
-<div class="logout-container">
+<div class="container logout-container">
     <h1>Logout</h1>
-    <button id="logoutButton">Logout</button>
+    <button id="logout-btn">Logout</button>
 </div>
 
-<script >document.getElementById('page1-btn').addEventListener('click', function() {
-    window.location.href = 'viewemp.html'; // Replace with the actual URL of Page 1
-});
+<script >
+    document.getElementById('view-employees-btn').addEventListener('click', function() {
+        window.location.href = 'viewemp.html';
+    });
 
-document.getElementById('page2-btn').addEventListener('click', function() {
-    window.location.href = 'login.html'; // Replace with the actual URL of Page 2
-});
+    document.getElementById('add-employees-btn').addEventListener('click', function() {
+        window.location.href = 'login.html';
+    });
+
+    document.getElementById('add-locations-btn').addEventListener('click',function(){
+        window.location.href = 'addloc.html';
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
-document.getElementById('logoutButton').addEventListener('click', async function() {
+        document.getElementById('logout-btn').addEventListener('click', async function() {
             try {
-                // Make a request to the logout route on the server
-
-
-
-                    // Redirect to the login page after successful logout
-                    window.location.href = 'logout.html';
-
-
-
+                window.location.href = 'logout.html';
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred during logout. Please try again.');
