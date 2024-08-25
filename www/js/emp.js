@@ -84,6 +84,7 @@ async function fetchEmployees() {
             }
         }
 
+
          // Fetch employees when the page loads
 
         window.onload = fetchEmployees;

@@ -20,7 +20,7 @@ async function checkValid() {
                         if (response.status == 200) {
                             alert('login successfully');
 
-                            window.location.href = 'js/login.html';
+                            window.location.href = 'js/adminlogin.html';
 
 
                         }else if(response.status == 202){

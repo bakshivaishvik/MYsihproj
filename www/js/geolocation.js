@@ -7,7 +7,7 @@ function onDeviceReady() {
 function getLocation() {
     var options = {
         enableHighAccuracy: true,
-        timeout: 5000,
+        timeout: 100,
         maximumAge: 0
     };
 
@@ -93,6 +93,7 @@ function onError(error) {
     var errorMessage = `Error (${error.code}): ${error.message}`;
     document.getElementById('location-info').innerHTML = errorMessage;
 }
+document.addEventListener('DOMContentLoaded', function() {
 document.getElementById('logoutButton').addEventListener('click', async function() {
             try {
                 // Make a request to the logout route on the server
@@ -109,3 +110,4 @@ document.getElementById('logoutButton').addEventListener('click', async function
                 alert('An error occurred during logout. Please try again.');
             }
         });
+         });

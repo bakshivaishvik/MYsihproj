@@ -1,87 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-        h2 {
-            margin-bottom: 1rem;
-        }
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            margin: 0.5rem 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: #fff;
-            font-size: 1rem;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .flash-message {
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            border-radius: 4px;
-        }
-        .flash-message.success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .flash-message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        .flash-message.info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-        }
-        .flash-message.warning {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <h2>Login</h2>
+try {
+                const response2 = await fetch(`https://192.168.0.110:5001/employees/{employee.id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
 
-    <div >  " enter ur loginid and passwd"</div>
+                if (!response2.ok) {
+                    throw new Error(`Error: ${response2.status}`);
+                }
 
-    <form id="login" onsubmit="event.preventDefault(); checkValid();">
-        <label for="loginId">loginId</label>
-        <input type="text" id="loginId" required>
-        <br>
-        <label for="password">password</label>
-        <input type="text" id="password" required>
-        <br>
-
-        <button type="submit">Add Employee</button>
-    </form>
-</div>
-</body>
-</html>
+                const emp_inout = await response2.json();
+                const distancell = document.createElement('td');
+                distancell.textContent = emp_inout.dist;
+                row.appendChild(distancell);
+                const timecell = document.createElement('td');
+                timecell.textContent = emp_inout.time;
+                row.appendChild(timecell);
+                const statuscell = document.createElement('td');
+                statuscell.textContent = emp_inout.status;
+                row.appendChild(statuscell);
+            } catch (error) {
+                console.error('Failed to fetch previous employee:', error);
+                displayError('No previous employee found or an error occurred.');
+            }

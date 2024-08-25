@@ -35,6 +35,14 @@ class Employee(db.Model):
     
     
     
+def model_to_dict(model_instance):
+    """Convert a SQLAlchemy model instance into a dictionary."""
+    return {
+        column.name: getattr(model_instance, column.name)
+        for column in model_instance.__table__.columns
+    }
+    
+    
 
 class LogInOut(db.Model):
     sno= db.Column(db.Integer,primary_key=True,autoincrement=True)
@@ -42,6 +50,22 @@ class LogInOut(db.Model):
     dist =db.Column(db.DOUBLE, nullable=False)
     time = db.Column(db.DATETIME(),nullable=False)
     status = db.Column(db.BOOLEAN(),default=False)
+    
+    
+@app.route('/LogInOut/<int:id>', methods=['GET'])
+def get_previous_employee(id):
+    latest_log = LogInOut.query.filter_by(id=id)\
+                               .order_by(LogInOut.time.desc())\
+                               .first()
+
+    if latest_log is None:
+        return jsonify({"error": "No logs found for this employee"}), 404
+    print(latest_log)
+    print(jsonify(model_to_dict(latest_log)))
+
+    return jsonify(model_to_dict(latest_log)), 200
+    
+   
 
 
 
@@ -77,8 +101,8 @@ def login():
     username=data['username']
     password=data['password']
     user = Employee.query.filter_by(username=username).first()
-    print(user)
-    print(username,password,user.password)
+    #print(user)
+    #print(username,password,user.password)
     
     if user and (user.password == password) and username=='admin':
         
@@ -125,7 +149,7 @@ def logout():
 ######################################################################
 @app.route('/LogInOut', methods=['GET'])
 def get_logins():
-    new_login = LogInOut(id=1,dist=0,time=datetime.datetime.now(),status=True)
+    new_login = LogInOut(id=1,dist=0,time=datetime.now(),status=True)
     db.session.add(new_login)
     db.session.commit()
     logins=LogInOut.query.all()

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect Page</title>
+    <style>
+        /* Simple styling for the buttons */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .button-container {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="button-container">
+    <button id="page1-btn">view employees</button>
+    <button id="page2-btn">add employees</button>
+</div>
+
+<div class="logout-container">
+    <h1>Logout</h1>
+    <button id="logoutButton">Logout</button>
+</div>
+
+<script >document.getElementById('page1-btn').addEventListener('click', function() {
+    window.location.href = 'viewemp.html'; // Replace with the actual URL of Page 1
+});
+
+document.getElementById('page2-btn').addEventListener('click', function() {
+    window.location.href = 'login.html'; // Replace with the actual URL of Page 2
+});
+    document.addEventListener('DOMContentLoaded', function() {
+document.getElementById('logoutButton').addEventListener('click', async function() {
+            try {
+                // Make a request to the logout route on the server
+
+
+
+                    // Redirect to the login page after successful logout
+                    window.location.href = 'logout.html';
+
+
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during logout. Please try again.');
+            }
+        });
+         });
+</script>
+</body>
+</html>
