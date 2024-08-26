@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
-
 app = Flask(__name__)
 CORS(app,resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
@@ -11,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
-#soc.bind(('', 5001))
+
 # Define a model for the database
 '''
 class User(db2.Model):
@@ -28,7 +27,7 @@ long=78.353006
 
 class Location(db.Model):
     #__bind_key__ = 'locations'  # Specifies the secondary database
-    
+
     name = db.Column(db.String(100),primary_key=True, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
@@ -51,7 +50,7 @@ class Employee(db.Model):
     loc_name = db.Column(db.String(20),nullable=False)
     def __repr__(self):
         return f'<Employee {self.name}>'
-    
+
     
     
 def model_to_dict(model_instance):
@@ -71,7 +70,6 @@ class LogInOut(db.Model):
     status = db.Column(db.BOOLEAN(),default=False)
     
     
-    
 @app.route('/LogInOut/<int:id>', methods=['GET'])
 def get_previous_employee(id):
     latest_log = LogInOut.query.filter_by(id=id)\
@@ -83,7 +81,7 @@ def get_previous_employee(id):
     #print(latest_log)
     #print(jsonify(model_to_dict(latest_log)))
     return jsonify(model_to_dict(latest_log)), 200
-    
+
 with app.app_context():
     
     #db.drop_all()  # Optionally drop all tables if you want a fresh start
@@ -117,6 +115,7 @@ def login():
     if user and check_password_hash(user.password, password):
         return jsonify({'message': 'login successful'}), 200 if username == 'admin' else 202
     else:
+        
         return jsonify({'message': 'login unsuccessful'}), 306
     
 @app.route('/login', methods=['GET'])
@@ -132,6 +131,7 @@ def get_login():
     if user and check_password_hash(user.password, password):
         return jsonify({'message': 'login successful'}), 200 if username == 'admin' else 202
     else:
+        
         return jsonify({'message': 'login unsuccessful'}), 306
 
 @app.route('/logout')
@@ -144,13 +144,13 @@ def logout():
 def add_location():
     # Extracting form data
     data = request.get_json()
-    
+
 
     # Simulating saving to a database
     # You can replace this with actual database logic
     new_employee = Location(name=data['name'], latitude=data['latitude'],longitude=data['longitude'],description=data['description'])#to be changed
     #print(type(time))
-    
+
     db.session.add(new_employee)
     db.session.commit()
 
@@ -276,7 +276,7 @@ def add_employee():
     return jsonify({'message': 'Employee added successfully'}), 201
 
 @app.route('/employees/<int:employee_id>', methods=['DELETE'])
-def get_employe(employee_id):
+def delete_employee(employee_id):
     employee = Employee.query.get_or_404(employee_id)
     db.session.delete(employee)
     db.session.commit()
@@ -284,7 +284,7 @@ def get_employe(employee_id):
 
 if __name__ == '__main__':
     context = (r"C:\Users\Sonu\server.crt", r"C:\Users\Sonu\server.key")
-    
+
     with app.app_context():
         admin = Employee.query.filter_by(username='admin').first()
         if not admin:
@@ -298,7 +298,7 @@ if __name__ == '__main__':
             )
             new_employe = LogInOut(id=1,dist=0, time=datetime.now(),status=True)#to be changed
             #print(type(time))
-            
+
             db.session.add(new_employe)
             db.session.commit()
             db.session.add(new_employee)
