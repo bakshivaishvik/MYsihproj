@@ -22,7 +22,7 @@ async function fetchEmployees() {
 
 async function fetchEmployee(emp) {
     try {
-        const response2 = await fetch(`https://192.168.0.110:5001/LogInOut/${emp.id}`, {
+        const response2 = await fetch(`https://192.168.0.110:5001/LogInOut/${emp.id}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

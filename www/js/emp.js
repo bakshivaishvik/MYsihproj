@@ -40,6 +40,7 @@ async function fetchEmployees() {
             const name = document.getElementById('name').value;
             const position = document.getElementById('position').value;
             const Id = document.getElementById('Id').value;
+            const loc = document.getElementById('loc').value;
             const uId = document.getElementById('uid').value;
             const pass = document.getElementById('pass').value;
             if (!name || !position) {
@@ -53,7 +54,7 @@ async function fetchEmployees() {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ Id,name, position ,uId,pass})
+                    body: JSON.stringify({ Id,name, position ,uId,pass,loc})
                 });
 
                 if (response.ok) {

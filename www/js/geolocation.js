@@ -42,10 +42,64 @@ function onSuccess(position) {
     }
 
 
-    // Example usage:
-    const dist = getDistanceFromLatLonInKm(latitude, longitude, 17.384384, 78.353006)*1000;
 
-    console.log("Distance:", dist, "m");
+
+
+
+
+async function fetchLocations(id) {
+    try {
+        // Send a GET request to the Flask API to retrieve employee data
+        const response = await fetch(`https://192.168.0.110:5001/employees/id/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error fetching employee: ${response.statusText}`);
+        }
+
+        const employee = await response.json();
+        console.log('Employee data:', employee);
+
+        // Use the specific property from the employee object to fetch location data
+        const loc_name = employee;  // Adjust this based on your data structure
+
+        // Fetch location data using the loc_name
+        const locationResponse = await fetch(`https://192.168.0.110:5001/Location/${loc_name}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!locationResponse.ok) {
+            throw new Error(`Error fetching location: ${locationResponse.statusText}`);
+        }
+
+        const latlon = await locationResponse.json();
+        console.log('Location data:', latlon.latitude);
+
+            const latitu = latlon.latitude;
+            const longitu = latlon.longitude;
+            const dist = getDistanceFromLatLonInKm(latitude, longitude, latitu, longitu)*1000;
+                console.log(dist);
+                pushdata(Id,dist,timestamp);
+                return dist;
+            //return { latitude, longitude };
+
+        } catch (error) {
+                console.error('Error occurred:', error);
+                alert(`An error occurred: ${error.message}`);
+            }
+            }
+
+    // Example usage:
+
+
+    //console.log("Distance:", dist, "m");
     async function pushdata(Id,dist,time){
     try {
                     const response = await fetch('https://192.168.0.110:5001/LogInOut', {
@@ -62,7 +116,7 @@ function onSuccess(position) {
 
                     const result = await response.json(); // Parse the JSON response
                     console.log('Data successfully pushed:', result);
-                    return result;
+                    //return result;
                 } catch (error) {
                     console.error('Error pushing data to server:', error);
                     throw error; // Re-throw the error after logging it
@@ -73,20 +127,34 @@ function onSuccess(position) {
             return urlParams.get(param);
         }
         const Id = getQueryParam('userId');
-        console.log(Id)
-
-    pushdata(Id,dist,timestamp);
+        //console.log(Id)
 
 
-    var locationInfo = `
-            <p>Latitude: ${latitude}</p>
-            <p>Longitude: ${longitude}</p>
-            <p>Accuracy: ${accuracy} meters</p>
-            <p>Timestamp: ${new Date(timestamp)}</p>
-            <p>distance: ${dist} meters</p>
-        `;
+    async function useFetchLocations() {
+        const dist = await fetchLocations(Id);
+        console.log(dist);
+        var locationInfo = `
+                    <p>Latitude: ${latitude}</p>
+                    <p>Longitude: ${longitude}</p>
+                    <p>Accuracy: ${accuracy} meters</p>
+                    <p>Timestamp: ${new Date(timestamp)}</p>
+                    <p>distance: ${dist} meters</p>
+                `;
 
-    document.getElementById('location-info').innerHTML = locationInfo;
+                document.getElementById('location-info').innerHTML = locationInfo;
+         //return dist;// dist now contains the resolved value
+    }
+    useFetchLocations();
+
+    //console.log( loca.latitude, loca.longitude);
+
+
+
+
+
+
+
+
 }
 
 function onError(error) {

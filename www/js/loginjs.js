@@ -26,7 +26,7 @@ async function checkValid() {
                         }else if(response.status == 202){
                             alert('login successful');
                             console.log(username)
-                            const url = `https://192.168.0.110:5001/employees/${username}`;
+                            const url = `https://192.168.0.110:5001/employees/username/${username}`;
                             console.log(url)
                             fetch(url)
                               .then(response => {
