@@ -127,3 +127,40 @@ document.getElementById('locationForm').addEventListener('submit', async functio
                 });
           //       });
         window.onload = fetchLocations;
+
+const map = L.map('map').setView([51.505, -0.09], 13); // Default location
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+}).addTo(map);
+    
+const marker = L.marker([51.505, -0.09], {
+    draggable: true
+}).addTo(map);
+    
+marker.on('dragend', function(e) {
+    const latLng = marker.getLatLng();
+    document.getElementById('latitude').value = latLng.lat.toFixed(6);
+    document.getElementById('longitude').value = latLng.lng.toFixed(6);
+});
+    
+map.on('click', function(e) {
+    const latLng = e.latlng;
+    marker.setLatLng(latLng);
+    document.getElementById('latitude').value = latLng.lat.toFixed(6);
+    document.getElementById('longitude').value = latLng.lng.toFixed(6);
+});
+    
+const geocoder = L.Control.Geocoder.nominatim();
+const control = L.Control.geocoder({
+    query: '',
+    placeholder: 'Search for a location...',
+    geocoder: geocoder,
+    defaultMarkGeocode: false
+}).on('markgeocode', function(e) {
+    const latLng = e.geocode.center;
+    map.setView(latLng, 13);
+    marker.setLatLng(latLng);
+    document.getElementById('latitude').value = latLng.lat.toFixed(6);
+    document.getElementById('longitude').value = latLng.lng.toFixed(6);
+}).addTo(map);
