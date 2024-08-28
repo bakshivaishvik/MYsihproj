@@ -4,12 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDown 1s ease-out forwards;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDown 1s ease-out forwards;
+            animation-delay: 0.5s;
+        }
+
+        #logoutButton {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out forwards;
+            animation-delay: 1s;
+        }
+
+        #logoutButton:hover {
+            background-color: #0056b3;
+        }
+
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-<h1>Logout</h1>
+<h1>LOGOUT</h1>
 <p>You have successfully logged out.</p>
 
-<button id="logoutButton">loginPage</button>
+<button id="logoutButton">➡ Go to Login Page</button>
 
 <script src="logout.js"></script>
 </body>

@@ -1,26 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0f7fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        h1 {
+            color: #00796b;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            animation: slideInDown 1s ease-out;
+        }
+
+        button {
+            background-color: #00796b;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            outline: none;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        button:hover {
+            background-color: #004d40;
+            transform: scale(1.05);
+        }
+
+        #location-info {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #00796b;
+            border-radius: 15px;
+            background-color: #ffffff;
+            display: inline-block;
+            width: 100%;
+            max-width: 600px;
+            text-align: left;
+            font-size: 1.1rem;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .logout-container {
+            margin-top: 50px;
+            text-align: center;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .logout-container h1 {
+            font-size: 2rem;
+            color: #d32f2f;
+        }
+
+        .logout-container button {
+            background-color: #d32f2f;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            animation: fadeInUp 1.7s ease-out;
+        }
+
+        .logout-container button:hover {
+            background-color: #b71c1c;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
     <title>Cordova Geolocation Example</title>
 </head>
-<body style="font-family: Arial, sans-serif; background-color: #f0f8ff; color: #333; padding: 20px; text-align: center;">
+<body >
 
-    <h1 style="color: #1e90ff;">Get Current Location</h1>
+    <h1>Get Current Location</h1>
 
     <!-- Button to trigger the geolocation function -->
-    <button onclick="getLocation()" style="background-color: #1e90ff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+    <button onclick="getLocation()" >
         Get Location
     </button>
 
     <!-- Placeholder for displaying location information -->
-    <div id="location-info" style="margin-top: 20px; padding: 10px; border: 1px solid #1e90ff; border-radius: 5px; background-color: #ffffff; display: inline-block; width: 80%; text-align: left;">
+    <div id="location-info" >
         <!-- Location info will be displayed here -->
     </div>
 
     <!-- Logout section -->
-    <div class="logout-container" style="margin-top: 40px;">
-        <h1 style="color: #1e90ff;">Logout</h1>
-        <button id="logoutButton" style="background-color: #ff4500; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+    <div class="logout-container">
+        <h1 >Logout</h1>
+        <button id="logoutButton">
             Logout
         </button>
     </div>

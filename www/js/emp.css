@@ -1,15 +1,39 @@
-body {
+       @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
             font-size: 14px; /* Decreased font size */
+            animation: fadeIn 1s ease-in-out;
         }
         h1 {
             text-align: center;
             margin: 1.5rem 0; /* Reduced margin */
             color: #333;
             font-size: 1.75rem; /* Decreased font size */
+            animation: bounceIn 1s ease-out;
         }
         .container {
             max-width: 800px;
@@ -34,14 +58,25 @@ body {
             color: #555;
             font-size: 0.875rem; /* Decreased font size */
         }
-        input {
+        .input-container {
+            position: relative;
+        }
+        .input-container input {
             width: calc(100% - 16px);
-            padding: 0.5rem; /* Reduced padding */
+            padding: 0.5rem 2rem; /* Reduced padding */
             margin-bottom: 0.75rem; /* Reduced margin */
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
             font-size: 0.875rem; /* Decreased font size */
+        }
+        .input-container .icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #007bff;
         }
         button {
             width: 100%;
@@ -52,6 +87,7 @@ body {
             color: #fff;
             font-size: 1rem;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         button:hover {
             background-color: #0056b3;
@@ -64,4 +100,30 @@ body {
         li {
             padding: 0.5rem 0;
             border-bottom: 1px solid #ddd;
+            animation: fadeIn 0.5s ease-in-out;
         }
+        .flash-message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            animation: shake 0.5s ease-in-out;
+        }
+        .flash-message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .flash-message.warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
