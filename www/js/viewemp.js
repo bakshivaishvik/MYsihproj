@@ -1,6 +1,8 @@
+//import {ip_ad} from "./commonvar.js";
+const ip_ad="192.168.0.110";
 async function fetchEmployees() {
     try {
-        const response = await fetch('https://192.168.0.110:5001/employees', {
+        const response = await fetch(`https://${ip_ad}:5001/employees`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -22,7 +24,7 @@ async function fetchEmployees() {
 
 async function fetchEmployee(emp) {
     try {
-        const response2 = await fetch(`https://192.168.0.110:5001/LogInOut/${emp.id}`,{
+        const response2 = await fetch(`https://${ip_ad}:5001/LogInOut/${emp.id}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

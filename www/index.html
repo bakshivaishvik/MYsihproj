@@ -4,27 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="js/index.css">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25%, 75% {
+                transform: translateX(-10px);
+            }
+            50% {
+                transform: translateX(10px);
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            margin: 0 0 1rem;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .info-text {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 0.75rem 2rem 0.75rem 2.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .input-container .icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: #007bff;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .flash-message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .flash-message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .flash-message.warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 <div class="container">
     <h2>Login</h2>
+    <div class="info-text">Please enter your login ID and password to continue.</div>
 
-    <div >enter ur loginid and passwd</div>
+    <form id="login-form" onsubmit="event.preventDefault(); checkValid();">
+        <div class="input-container">
+            <label for="loginId">Login ID</label>
+            <i class="fas fa-user icon"></i>
+            <input type="text" id="loginId" name="loginId" required placeholder="Enter your login ID">
+        </div>
 
-    <form id="login" onsubmit="event.preventDefault(); checkValid();">
-        <label for="loginId">loginId</label>
-        <input type="text" id="loginId" required>
-        <br>
-        <label for="password">password</label>
-        <input type="text" id="password" required>
-        <br>
+        <div class="input-container">
+            <label for="password">Password</label>
+            <i class="fas fa-lock icon"></i>
+            <input type="password" id="password" name="password" required placeholder="Enter your password">
+        </div>
 
-        <button type="submit">login</button>
+        <button type="submit">Login</button>
     </form>
 </div>
-
-</body>
 <script src="js/loginjs.js"></script>
-
+</body>
 </html>

@@ -1,4 +1,10 @@
+//import { ip_ad } from "../js/commonvar.js";
+
+//console.log(ip_ad);
+
 async function checkValid() {
+const ip_ad="192.168.0.110";
+console.log('checkValid function called');
                     const username = document.getElementById('loginId').value;
                     const password = document.getElementById('password').value;
 
@@ -8,7 +14,7 @@ async function checkValid() {
                     }
 
                     try {
-                        const response = await fetch('https://192.168.0.110:5001/login', {
+                        const response = await fetch(`https://${ip_ad}:5001/login`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -26,7 +32,7 @@ async function checkValid() {
                         }else if(response.status == 202){
                             alert('login successful');
                             console.log(username)
-                            const url = `https://192.168.0.110:5001/employees/username/${username}`;
+                            const url = `https://${ip_ad}:5001/employees/username/${username}`;
                             console.log(url)
                             fetch(url)
                               .then(response => {

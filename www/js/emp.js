@@ -1,3 +1,5 @@
+//import {ip_ad} from "./commonvar.js";
+const ip_ad="192.168.0.110";
 document.getElementById('logoutButton').addEventListener('click', async function() {
             try {
                 // Make a request to the logout route on the server
@@ -17,7 +19,7 @@ document.getElementById('logoutButton').addEventListener('click', async function
 
 async function fetchEmployees() {
             try {
-                const response = await fetch('https://192.168.0.110:5001/employees');
+                const response = await fetch(`https://${ip_ad}:5001/employees`);
                 const employees = await response.json();
                 const employeeList = document.getElementById('employeeList');
                 employeeList.innerHTML = ''; // Clear the list
@@ -49,7 +51,7 @@ async function fetchEmployees() {
             }
 
             try {
-                const response = await fetch('https://192.168.0.110:5001/employees', {
+                const response = await fetch(`https://${ip_ad}:5001/employees`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -70,7 +72,7 @@ async function fetchEmployees() {
 
         async function deleteEmployee(employeeId) {
             try {
-                const response = await fetch(`https://192.168.0.110:5001/employees/${employeeId}`, {
+                const response = await fetch(`https://${ip_ad}:5001/employees/${employeeId}`, {
                     method: 'DELETE'
                 });
 

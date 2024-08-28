@@ -1,3 +1,5 @@
+//import {ip_ad} from "./commonvar.js";
+const ip_ad="192.168.0.110";
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
@@ -49,8 +51,9 @@ function onSuccess(position) {
 
 async function fetchLocations(id) {
     try {
+    //const ip_ad = "192.168.0.110";
         // Send a GET request to the Flask API to retrieve employee data
-        const response = await fetch(`https://192.168.0.110:5001/employees/id/${id}`, {
+        const response = await fetch(`https://${ip_ad}:5001/employees/id/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -68,7 +71,7 @@ async function fetchLocations(id) {
         const loc_name = employee;  // Adjust this based on your data structure
 
         // Fetch location data using the loc_name
-        const locationResponse = await fetch(`https://192.168.0.110:5001/Location/${loc_name}`, {
+        const locationResponse = await fetch(`https://${ip_ad}:5001/Location/${loc_name}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -85,8 +88,9 @@ async function fetchLocations(id) {
             const latitu = latlon.latitude;
             const longitu = latlon.longitude;
             const dist = getDistanceFromLatLonInKm(latitude, longitude, latitu, longitu)*1000;
+            let status = dist <= 250 ? 'True' : 'False';
                 console.log(dist);
-                pushdata(Id,dist,timestamp);
+                pushdata(Id,dist,timestamp,status);
                 return dist;
             //return { latitude, longitude };
 
@@ -100,14 +104,14 @@ async function fetchLocations(id) {
 
 
     //console.log("Distance:", dist, "m");
-    async function pushdata(Id,dist,time){
+    async function pushdata(Id,dist,time,status){
     try {
-                    const response = await fetch('https://192.168.0.110:5001/LogInOut', {
+                    const response = await fetch(`https://${ip_ad}:5001/LogInOut`, {
                         method: 'POST', // Use POST method to send data
                         headers: {
                             'Content-Type': 'application/json', // Set the content type to JSON
                         },
-                        body: JSON.stringify({ Id,dist, time }), // Convert the data to a JSON string
+                        body: JSON.stringify({ Id,dist, time,status }), // Convert the data to a JSON string
                     });
 
                     if (!response.ok) {
@@ -147,14 +151,6 @@ async function fetchLocations(id) {
     useFetchLocations();
 
     //console.log( loca.latitude, loca.longitude);
-
-
-
-
-
-
-
-
 }
 
 function onError(error) {

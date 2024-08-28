@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
+import logging
 app = Flask(__name__)
 CORS(app,resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
@@ -70,17 +71,7 @@ class LogInOut(db.Model):
     status = db.Column(db.BOOLEAN(),default=False)
     
     
-@app.route('/LogInOut/<int:id>', methods=['GET'])
-def get_previous_employee(id):
-    latest_log = LogInOut.query.filter_by(id=id)\
-                               .order_by(LogInOut.time.desc())\
-                               .first()
 
-    if latest_log is None:
-        return jsonify({"error": "No logs found for this employee"}), 404
-    #print(latest_log)
-    #print(jsonify(model_to_dict(latest_log)))
-    return jsonify(model_to_dict(latest_log)), 200
 
 with app.app_context():
     
@@ -144,7 +135,7 @@ def logout():
 def add_location():
     # Extracting form data
     data = request.get_json()
-
+    
 
     # Simulating saving to a database
     # You can replace this with actual database logic
@@ -153,7 +144,7 @@ def add_location():
 
     db.session.add(new_employee)
     db.session.commit()
-
+    db.session.close()
     # Return a success message
     return jsonify({"message": "Location added successfully!"}), 200
 
@@ -168,7 +159,7 @@ def delete_location(name):
     # Delete the location
     db.session.delete(location)
     db.session.commit()
-
+    db.session.close()
     # Return a success message
     return jsonify({"message": "Location deleted successfully!"}), 200
 
@@ -202,9 +193,9 @@ def get_location(name):
 
     # Return the data as JSON
     return jsonify(location_data), 200
-'''
+
 @app.route('/employees/location/<string:loc_name>', methods=['GET'])
-def get_location(loc_name):
+def get_locatione(loc_name):
     # Query to get the specific employee by id
     #print(username)
     employee = Employee.query.filter_by(loc_name=loc_name).first()
@@ -213,15 +204,31 @@ def get_location(loc_name):
         return jsonify({"error": "Employee not found"}), 404
 
     return jsonify(employee.loc_name), 200
-'''
+
 
 
 ######################################################################
+@app.route('/LogInOut/<int:id>', methods=['GET'])
+def get_previous_employee(id):
+    latest_log = LogInOut.query.filter_by(id=id)\
+                               .order_by(LogInOut.time.desc())\
+                               .first()
+
+    if latest_log is None:
+        return jsonify({"error": "No logs found for this employee"}), 404
+    #print(latest_log)
+    #print(jsonify(model_to_dict(latest_log)))
+    return jsonify(model_to_dict(latest_log)), 200
+
+
+
+
 @app.route('/LogInOut', methods=['GET'])
 def get_logins():
     new_login = LogInOut(id=1,dist=0,time=datetime.now(),status=True)
     db.session.add(new_login)
     db.session.commit()
+    db.session.close()
     logins=LogInOut.query.all()
     
     res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status} for emp in logins]
@@ -230,17 +237,27 @@ def get_logins():
 @app.route('/LogInOut', methods=['POST'])
 def add_employees():
     data = request.get_json()
-    
-    new_employee = LogInOut(id=data['Id'],dist=data['dist'], time=datetime.utcfromtimestamp(data['time']/1000),status=True)#to be changed
-    #print(type(time))
+    id=data['Id']
+    status=data['status']
+    if data['status'] == 'True':
+        status=True
+    else:
+        status=False
+    #print()
+    employee = LogInOut.query.filter_by(id=id).order_by(LogInOut.time.desc()).first()
+    if status==employee.status:
+        return jsonify({'message': 'same as before'}), 201
+    new_employee = LogInOut(id=data['Id'],dist=data['dist'], time=datetime.utcfromtimestamp(data['time']/1000),status=status)#to be changed
+    #print(bool(data['status']))
     
     db.session.add(new_employee)
     db.session.commit()
+    db.session.close()
     return jsonify({'message': 'updated'}), 201
 
 #######################################################################
 @app.route('/employees/id/<int:id>', methods=['GET'])
-def delete_employee(id):
+def fetch_locations(id):
     employee = Employee.query.filter_by(id=id).first()
     print(employee.loc_name)
     if employee is None:
@@ -273,6 +290,7 @@ def add_employee():
     new_employee = Employee(id=data['Id'],name=data['name'], position=data['position'],loc_name=data['loc'], username=data['uId'], password=generate_password_hash(data['pass']))
     db.session.add(new_employee)
     db.session.commit()
+    db.session.close()
     return jsonify({'message': 'Employee added successfully'}), 201
 
 @app.route('/employees/<int:employee_id>', methods=['DELETE'])
@@ -280,10 +298,12 @@ def delete_employee(employee_id):
     employee = Employee.query.get_or_404(employee_id)
     db.session.delete(employee)
     db.session.commit()
+    db.session.close()
     return jsonify({'message': 'Employee deleted successfully'})
 
 if __name__ == '__main__':
-    context = (r"C:\Users\Sonu\server.crt", r"C:\Users\Sonu\server.key")
+#    logging.basicConfig(level=logging.DEBUG)
+    context = ("cert.pem", "key.pem")
 
     with app.app_context():
         admin = Employee.query.filter_by(username='admin').first()
@@ -301,8 +321,10 @@ if __name__ == '__main__':
 
             db.session.add(new_employe)
             db.session.commit()
+            db.session.close()
             db.session.add(new_employee)
             db.session.commit()
+            db.session.close()
     app.run(host = '192.168.0.110',port = 5001,ssl_context=context)
     
-
+#openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
