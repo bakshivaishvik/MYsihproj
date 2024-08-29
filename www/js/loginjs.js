@@ -3,7 +3,8 @@
 //console.log(ip_ad);
 
 async function checkValid() {
-const ip_ad="192.168.0.110";
+//const ip_ad="192.168.0.110";
+const ip_ad="192.168.230.122";
 console.log('checkValid function called');
                     const username = document.getElementById('loginId').value;
                     const password = document.getElementById('password').value;

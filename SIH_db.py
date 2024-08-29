@@ -2,7 +2,7 @@ from flask import Flask, jsonify, render_template, request, redirect, url_for, f
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from datetime import datetime
+from datetime import datetime,timedelta
 import logging
 app = Flask(__name__)
 CORS(app,resources={r"/*": {"origins": "*"}})
@@ -49,6 +49,7 @@ class Employee(db.Model):
     username = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(20), nullable=False)
     loc_name = db.Column(db.String(20),nullable=False)
+    hrs_worked = db.Column(db.FLOAT())
     def __repr__(self):
         return f'<Employee {self.name}>'
 
@@ -76,6 +77,7 @@ class LogInOut(db.Model):
 with app.app_context():
     
     #db.drop_all()  # Optionally drop all tables if you want a fresh start
+    
     db.create_all()
     
     
@@ -86,7 +88,57 @@ def home():
     if 'username' in session:
         return   # Redirect to dashboard if logged in
     return 
+
+@app.route('/employee/working_hours', methods=['POST'])
+def get_working_hours():
+    employees = Employee.query.all()
     
+    for employee in employees:
+        # Calculate total working hours for each employee
+        time = calculate_working_hours(employee.id)
+        employee.hrs_worked = -time
+        db.session.commit()
+        # Here, you might want to update this total_hours in a new column in the Employee table or another table
+        # For demonstration, we'll just print it
+        print(f"Employee ID {employee.id}: Total working hours  {time}")
+
+    return {"message": "All employees' working hours updated successfully!"}
+    
+
+def calculate_working_hours(employee_id):
+    logs = LogInOut.query.filter_by(id=employee_id).order_by(LogInOut.sno.desc()).all()
+    
+    if not logs:
+        return "No records found for this employee"
+    
+    total_time = timedelta()  # Initialize total time to zero
+    
+    login_time = None  # To store the time of the last login
+    
+    for log in logs:
+        if log.status:  # True indicates login
+            if login_time is not None:
+                # Handle case where there was a previous login without a corresponding logout
+                print(f"Unpaired loginnnnnnnnnn at {login_time} for {employee_id}. Ignoring this login.")
+            login_time = log.time
+        else:  # False indicates logout
+            if login_time is not None:
+                # Calculate the difference between the login and logout time
+                total_time += log.time - login_time
+                login_time = None  # Reset login_time after calculating the duration
+            else:
+                print(f"Unpaired login at {login_time} for {employee_id}. Ignoring this login.")
+        print(employee_id,total_time)
+    # Handle the case where there's an unpaired login at the end
+    if login_time is not None:
+        print(f"Warning: Employee logged in at {login_time} but never logged out.")
+    
+    # Convert total time to hours and minutes
+    hours, remainder = divmod(total_time.total_seconds(), 3600)
+    minutes, _ = divmod(remainder, 60)
+    time=float((hours*60+minutes)/60)
+    
+    return time   
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -211,27 +263,39 @@ def get_locatione(loc_name):
 @app.route('/LogInOut/<int:id>', methods=['GET'])
 def get_previous_employee(id):
     latest_log = LogInOut.query.filter_by(id=id)\
-                               .order_by(LogInOut.time.desc())\
+                               .order_by(LogInOut.sno.desc())\
                                .first()
 
     if latest_log is None:
         return jsonify({"error": "No logs found for this employee"}), 404
-    #print(latest_log)
+    print(latest_log.dist)
     #print(jsonify(model_to_dict(latest_log)))
     return jsonify(model_to_dict(latest_log)), 200
 
+@app.route('/LogInOut/allemp/<int:id>', methods=['GET'])
+def get_previous_employeee(id):
+    logs = LogInOut.query.filter_by(id=id).all()
+                               
 
+    if logs is None:
+        return jsonify({"error": "No logs found for this employee"}), 404
+    log_entries = [model_to_dict(log) for log in logs]
+    #print(jsonify(model_to_dict(latest_log)))
+    return jsonify(log_entries), 200
 
 
 @app.route('/LogInOut', methods=['GET'])
 def get_logins():
+    '''
     new_login = LogInOut(id=1,dist=0,time=datetime.now(),status=True)
     db.session.add(new_login)
     db.session.commit()
     db.session.close()
+    '''
     logins=LogInOut.query.all()
     
     res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status} for emp in logins]
+    print(res)
     return jsonify(res)
 
 @app.route('/LogInOut', methods=['POST'])
@@ -244,18 +308,61 @@ def add_employees():
     else:
         status=False
     #print()
-    employee = LogInOut.query.filter_by(id=id).order_by(LogInOut.time.desc()).first()
+    employee = LogInOut.query.filter_by(id=id).order_by(LogInOut.sno.desc()).first()
+    #print("dist is"+data['dist'])
     if status==employee.status:
         return jsonify({'message': 'same as before'}), 201
-    new_employee = LogInOut(id=data['Id'],dist=data['dist'], time=datetime.utcfromtimestamp(data['time']/1000),status=status)#to be changed
-    #print(bool(data['status']))
-    
-    db.session.add(new_employee)
-    db.session.commit()
-    db.session.close()
-    return jsonify({'message': 'updated'}), 201
+    else:
+        new_employee = LogInOut(id=data['Id'],dist=data['dist'], time=datetime.utcfromtimestamp(data['time']/1000),status=status)#to be changed
+        #print(bool(data['status']))
+        
+        db.session.add(new_employee)
+        db.session.commit()
+        db.session.close()
+        return jsonify({'message': 'updated'}), 201
 
 #######################################################################
+@app.route('/employees/<int:employee_id>/update_pass', methods=['PATCH'])
+def update_employee_pass(employee_id):
+    data = request.get_json()
+
+    # Validate that the new loc_name is provided
+    new_loc_name = data.get('loc_name')
+    #print(new_loc_name)
+    if not new_loc_name:
+        return jsonify({"error": "New pass is required"}), 400
+    print(employee_id)
+    # Query to get the specific employee by ID
+    employee = Employee.query.get(employee_id)
+    #print(employee.loc_name)
+    if not employee:
+        return jsonify({"error": "Employee not found"}), 404
+
+    # Update the loc_name
+    employee.password = generate_password_hash(new_loc_name)
+    db.session.commit()
+    db.session.close()
+    return jsonify({"message": "Employee pass updated successfully"}), 200
+@app.route('/employees/<int:employee_id>/update_location', methods=['PATCH'])
+def update_employee_location(employee_id):
+    data = request.get_json()
+
+    # Validate that the new loc_name is provided
+    new_loc_name = data.get('loc_name')
+    #print(new_loc_name)
+    if not new_loc_name:
+        return jsonify({"error": "New location name is required"}), 400
+    print(employee_id)
+    # Query to get the specific employee by ID
+    employee = Employee.query.get(employee_id)
+    #print(employee.loc_name)
+    if not employee:
+        return jsonify({"error": "Employee not found"}), 404
+
+    # Update the loc_name
+    employee.loc_name = new_loc_name
+    db.session.commit()
+    return jsonify({"message": "Employee location updated successfully"}), 200
 @app.route('/employees/id/<int:id>', methods=['GET'])
 def fetch_locations(id):
     employee = Employee.query.filter_by(id=id).first()
@@ -280,15 +387,21 @@ def get_employee(username):
 def get_employees():
     employees = Employee.query.all()
     #logins=LogInOut.query.all()
-    result = [{'id': emp.id, 'name': emp.name, 'position': emp.position} for emp in employees]
+    result = [{'id': emp.id, 'name': emp.name, 'position': emp.position,'hrs_worked':emp.hrs_worked} for emp in employees]
     #res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status} for emp in logins]
     return jsonify(result)
 
 @app.route('/employees', methods=['POST'])
 def add_employee():
     data = request.get_json()
-    new_employee = Employee(id=data['Id'],name=data['name'], position=data['position'],loc_name=data['loc'], username=data['uId'], password=generate_password_hash(data['pass']))
+    new_employee = Employee(id=data['Id'],name=data['name'], position=data['position'],loc_name=data['loc'], username=data['uId'], password=generate_password_hash(data['pass']),hrs_worked='0.0')
     db.session.add(new_employee)
+    db.session.commit()
+    db.session.close()
+    new_employe = LogInOut(id=data['Id'],dist=0, time=datetime.now(),status=True)#to be changed
+    #print(type(time))
+
+    db.session.add(new_employe)
     db.session.commit()
     db.session.close()
     return jsonify({'message': 'Employee added successfully'}), 201
@@ -314,7 +427,8 @@ if __name__ == '__main__':
                 position='admin',
                 loc_name="office",
                 username='admin',
-                password=generate_password_hash('admin123')
+                password=generate_password_hash('admin123'),
+                hrs_worked=0.0
             )
             new_employe = LogInOut(id=1,dist=0, time=datetime.now(),status=True)#to be changed
             #print(type(time))
@@ -325,6 +439,7 @@ if __name__ == '__main__':
             db.session.add(new_employee)
             db.session.commit()
             db.session.close()
-    app.run(host = '192.168.0.110',port = 5001,ssl_context=context)
+    app.run(host = '192.168.230.122',port = 5001,ssl_context=context)
     
 #openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
+#192.168.230.112

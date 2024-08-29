@@ -1,5 +1,6 @@
 //import {ip_ad} from "./commonvar.js";
-const ip_ad="192.168.0.110";
+//const ip_ad="192.168.0.110";
+const ip_ad="192.168.230.122";
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
@@ -136,7 +137,8 @@ async function fetchLocations(id) {
 
     async function useFetchLocations() {
         const dist = await fetchLocations(Id);
-        console.log(dist);
+        console.log(new Date(timestamp));
+        document.getElementById('location-info').innerHTML = '';
         var locationInfo = `
                     <p>Latitude: ${latitude}</p>
                     <p>Longitude: ${longitude}</p>
@@ -146,9 +148,20 @@ async function fetchLocations(id) {
                 `;
 
                 document.getElementById('location-info').innerHTML = locationInfo;
+
          //return dist;// dist now contains the resolved value
     }
     useFetchLocations();
+    function autoClickButton() {
+            // Find the button element by its ID
+            const button = document.getElementById('getloc');
+
+            // Simulate a click on the button
+            button.click();
+        }
+
+        // Set a delay before the button is clicked automatically
+        setTimeout(autoClickButton, 10000);
 
     //console.log( loca.latitude, loca.longitude);
 }

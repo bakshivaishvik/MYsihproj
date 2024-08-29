@@ -126,4 +126,47 @@
             background-color: #fff3cd;
             color: #856404;
         }
+        .table-container {
+                    overflow-x: auto;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                    background-color: #fff;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+
+                table, th, td {
+                    border: 1px solid #ddd;
+                }
+
+                th, td {
+                    padding: 12px;
+                    text-align: left;
+                }
+
+                th {
+                    background-color: #4CAF50;
+                    color: white;
+                    cursor: pointer;
+                }
+
+                td {
+                    background-color: #f9f9f9;
+                }
+
+                tr:nth-child(even) td {
+                    background-color: #f2f2f2;
+                }
+
+                tr:hover {
+                    background-color: #e1e1e1;
+                    transition: background-color 0.3s ease;
+                }
+
+                .selected {
+                    background-color: #d1e7dd !important;
+                }
 

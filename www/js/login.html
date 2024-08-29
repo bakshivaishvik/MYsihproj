@@ -6,6 +6,7 @@
     <title>Employee Management</title>
 
     <link rel="stylesheet" href="emp.css">
+    <link rel="stylesheet" href="addloc.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -35,10 +36,17 @@
         </div>
 
         <div class="input-container">
+            <label for="loc">location</label>
+            <i class="fas fa-briefcase icon"></i>
+            <input type="text" id="loc" required>
+        </div>
+
+        <div class="input-container">
             <label for="uid">Username</label>
             <i class="fas fa-user-tag icon"></i>
             <input type="text" id="uid" required>
         </div>
+
 
         <div class="input-container">
             <label for="pass">Password</label>
@@ -54,11 +62,19 @@
     <h2><i class="fas fa-list"></i> Employee List</h2>
     <ul id="employeeList"></ul>
 </div>
+<div class="container">
+    <label for="editlocationId">Enter employee id and password to update:</label>
+    <input type="number" id="id_user" required>
+    <input type="text" id="loca_user" required>
+
+
+    <button id="update"><i class="fas fa-trash-alt"></i> update location</button>
+</div>
 <div class="logout-container">
     <h1>Logout</h1>
     <button id="logoutButton">Logout</button>
 </div>
-<script type="module" src="emp.js">
+<script src="emp.js">
 
 </script>
 </body>
