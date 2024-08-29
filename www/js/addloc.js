@@ -105,37 +105,7 @@ document.getElementById('locationForm').addEventListener('submit', async functio
                 }
 
                 // Fetch locations when the page loads
-        async function updateEmployeeLocation() {
-            try {
-                //updateEmployeeLocation(employeeId, newLocName);
-                const employeeId=document.getElementById('id_user').value;
-                const newLocName=document.getElementById('loca_user').value;
-                const response = await fetch(`https://${ip_ad}:5001/employees/${employeeId}/update_location`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ loc_name: newLocName })
-                });
 
-                if (!response.ok) {
-                    throw new Error(`Failed to update location: ${response.statusText}`);
-                }
-
-                const result = await response.json();
-                console.log(result.message);
-                alert(result.message);
-
-            } catch (error) {
-                console.error('Error updating employee location:', error);
-                alert(`Error: ${error.message}`);
-            }
-        }
-
-        // Example usage
-
-
-        document.getElementById('update').addEventListener('click', updateEmployeeLocation);
 
         // Attach the deleteLocation function to the button click event
         document.getElementById('deleteButton').addEventListener('click', deleteLocation);
