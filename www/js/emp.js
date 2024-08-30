@@ -1,6 +1,6 @@
 //import {ip_ad} from "./commonvar.js";
-//const ip_ad="192.168.0.110";
-const ip_ad="192.168.230.122";
+const ip_ad="192.168.0.110";
+//const ip_ad="192.168.230.122";
 document.getElementById('logoutButton').addEventListener('click', async function() {
             try {
                 // Make a request to the logout route on the server

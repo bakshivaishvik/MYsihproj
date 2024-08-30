@@ -12,16 +12,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 
-# Define a model for the database
-'''
-class User(db2.Model):
-    id = db2.Column(db2.Integer, primary_key=True)
-    username = db2.Column(db2.String(80), unique=True, nullable=False)
-    password = db2.Column(db2.String(120), nullable=False)
-
-with app.app_context():
-    db2.create_all()
-'''
 db = SQLAlchemy(app)
 lat=17.384384
 long=78.353006
@@ -89,7 +79,7 @@ def home():
         return   # Redirect to dashboard if logged in
     return 
 
-@app.route('/employee/working_hours', methods=['POST'])
+@app.route('/employee/working_hours', methods=['GET'])
 def get_working_hours():
     employees = Employee.query.all()
     
@@ -97,12 +87,14 @@ def get_working_hours():
         # Calculate total working hours for each employee
         time = calculate_working_hours(employee.id)
         employee.hrs_worked = -time
+        print(f"Employee ID {employee.id}: Total working hours  {time}")
         db.session.commit()
+    db.session.close()
         # Here, you might want to update this total_hours in a new column in the Employee table or another table
         # For demonstration, we'll just print it
-        print(f"Employee ID {employee.id}: Total working hours  {time}")
+        
 
-    return {"message": "All employees' working hours updated successfully!"}
+    return jsonify({"message": "All employees' working hours updated successfully!"}),202
     
 
 def calculate_working_hours(employee_id):
@@ -203,13 +195,14 @@ def add_location():
 @app.route('/Location/<string:name>', methods=['DELETE'])
 def delete_location(name):
     # Query to get the specific location by id
-    location = Location.query.get(name)
+    location = Location.query.filter_by(name=name).first()
 
     if location is None:
         return jsonify({"error": "Location not found"}), 404
 
     # Delete the location
     db.session.delete(location)
+
     db.session.commit()
     db.session.close()
     # Return a success message
@@ -333,7 +326,7 @@ def update_employee_pass(employee_id):
         return jsonify({"error": "New pass is required"}), 400
     print(employee_id)
     # Query to get the specific employee by ID
-    employee = Employee.query.get(employee_id)
+    employee = Employee.query.filter_by(id=employee_id).first()
     #print(employee.loc_name)
     if not employee:
         return jsonify({"error": "Employee not found"}), 404
@@ -354,7 +347,7 @@ def update_employee_location(employee_id):
         return jsonify({"error": "New location name is required"}), 400
     print(employee_id)
     # Query to get the specific employee by ID
-    employee = Employee.query.get(employee_id)
+    employee = Employee.query.filter_by(id=employee_id).first()
     #print(employee.loc_name)
     if not employee:
         return jsonify({"error": "Employee not found"}), 404
@@ -439,7 +432,7 @@ if __name__ == '__main__':
             db.session.add(new_employee)
             db.session.commit()
             db.session.close()
-    app.run(host = '192.168.230.122',port = 5001,ssl_context=context)
+    app.run(host = '192.168.0.110',port = 5001,ssl_context=context)
     
 #openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
 #192.168.230.112

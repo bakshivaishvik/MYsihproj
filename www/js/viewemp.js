@@ -1,12 +1,12 @@
 //import {ip_ad} from "./commonvar.js";
-//const ip_ad="192.168.0.110";
-const ip_ad="192.168.230.122";
+const ip_ad="192.168.0.110";
+//const ip_ad="192.168.230.122";
 
 
 async function updateAllEmployeesHours() {
     try {
         const response = await fetch(`https://${ip_ad}:5001/employee/working_hours`, {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }

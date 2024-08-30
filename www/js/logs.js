@@ -1,5 +1,5 @@
-//const ip_ad="192.168.0.110"
-const ip_ad="192.168.230.122";
+const ip_ad="192.168.0.110"
+//const ip_ad="192.168.230.122";
 document.getElementById('employeeForm').addEventListener('submit', async (event) => {
     event.preventDefault(); // Prevent the form from submitting normally
 

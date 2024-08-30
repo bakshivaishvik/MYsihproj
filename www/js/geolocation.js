@@ -1,6 +1,6 @@
 //import {ip_ad} from "./commonvar.js";
-//const ip_ad="192.168.0.110";
-const ip_ad="192.168.230.122";
+const ip_ad="192.168.0.110";
+//const ip_ad="192.168.230.122";
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onDeviceReady() {
@@ -10,7 +10,7 @@ function onDeviceReady() {
 function getLocation() {
     var options = {
         enableHighAccuracy: true,
-        timeout: 100,
+        timeout: 2000,
         maximumAge: 0
     };
 
