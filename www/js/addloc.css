@@ -1,210 +1,215 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e9ecef;
-            margin: 0;
-            padding: 20px;
-            animation: fadeIn 1s ease-in-out;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9ecef;
+    margin: 0;
+    padding: 20px;
+    animation: fadeIn 1s ease-in-out;
+}
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
 
-        .container {
-            max-width: 500px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-            animation: slideInUp 1s ease-in-out;
-        }
+.container {
+    max-width: 500px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    animation: slideInUp 1s ease-in-out;
+}
 
-        @keyframes slideInUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+@keyframes slideInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
 
-        h1 {
-            text-align: center;
-            color: #333;
-            position: relative;
-            margin-bottom: 20px;
-        }
+h1 {
+    text-align: center;
+    color: #333;
+    position: relative;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        h1::before {
-            content: "\f3c5"; /* Map Marker icon from FontAwesome */
-            font-family: 'FontAwesome';
-            font-size: 1.5rem;
-            color: #28a745;
-            position: absolute;
-            left: -30px;
-            top: 0;
-        }
+h1::before {
+    content: "\f3c5"; /* Map Marker icon from FontAwesome */
+    font-family: 'FontAwesome';
+    font-size: 1.5rem;
+    color: #28a745;
+    margin-right: 10px;
+}
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
+form {
+    display: flex;
+    flex-direction: column;
+}
 
-        label {
-            margin-top: 10px;
-        }
+label {
+    margin-top: 10px;
+}
 
-        input[type="text"], input[type="number"], textarea {
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 100%;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease, transform 0.2s ease;
-        }
+input[type="text"], input[type="number"], textarea {
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, transform 0.2s ease;
+}
 
-        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
-            border-color: #28a745;
-            transform: scale(1.02);
-        }
+input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+    border-color: #28a745;
+    transform: scale(1.02);
+}
 
-        button {
-            padding: 10px 20px;
-            margin: 10px 0;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px;
-            background-color: #28a745;
-            color: #ffffff;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            align-self: center; /* Center the button */
-            width: 100%; /* Make button full width */
-            max-width: 300px; /* Limit max width */
-        }
+button {
+    padding: 10px 20px;
+    margin: 10px 0;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #28a745;
+    color: #ffffff;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    align-self: center; /* Center the button */
+    width: 100%; /* Make button full width */
+    max-width: 300px; /* Limit max width */
+}
 
-        button i {
-            margin-right: 8px;
-        }
+button i {
+    margin-right: 8px;
+}
 
-        button::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0);
-            border-radius: 50%;
-            transition: transform 0.5s, opacity 0.5s;
-        }
+button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    transition: transform 0.5s, opacity 0.5s;
+}
 
-        button:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-        }
+button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
 
-        button:active::after {
-            transform: translate(-50%, -50%) scale(2);
-            opacity: 0;
-        }
+button:active::after {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+}
 
-        button:active {
-            background-color: #1e7e34;
-            transform: translateY(0);
-        }
-        #map {
-            height: 300px;
-            margin-top: 10px;
-            border-radius: 8px;
-        }
+button:active {
+    background-color: #1e7e34;
+    transform: translateY(0);
+}
 
-        .logout-container {
-            margin-top: 40px;
-            text-align: center; /* Center the logout container */
-        }
+#map {
+    height: 300px;
+    margin-top: 10px;
+    border-radius: 8px;
+}
 
-        .logout-container h1 {
-            margin-bottom: 20px;
-            font-size: 22px;
-            color: #dc3545;
-            position: relative;
-        }
+.logout-container {
+    margin-top: 40px;
+    text-align: center; /* Center the logout container */
+}
 
-        .logout-container h1::before {
-            content: "\f2f5"; /* Sign Out icon from FontAwesome */
-            font-family: 'FontAwesome';
-            font-size: 1.5rem;
-            color: #dc3545;
-            position: absolute;
-            left: -30px;
-            top: 0;
-        }
+.logout-container h1 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    color: #dc3545;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        .logout-container button {
-            background-color: #dc3545;
-            width: 100%; /* Make button full width */
-            max-width: 300px; /* Limit max width */
-            display: block; /* Center the button */
-            margin: 0 auto;
-        }
+.logout-container h1::before {
+    content: "\f2f5"; /* Sign Out icon from FontAwesome */
+    font-family: 'FontAwesome';
+    font-size: 1.5rem;
+    color: #dc3545;
+    margin-right: 10px;
+}
 
-        .logout-container button:hover {
-            background-color: #c82333;
-        }
+.logout-container button {
+    background-color: #dc3545;
+    width: 100%; /* Make button full width */
+    max-width: 300px; /* Limit max width */
+    display: block; /* Center the button */
+    margin: 0 auto;
+}
 
-        .logout-container button:active {
-            background-color: #bd2130;
-        }
+.logout-container button:hover {
+    background-color: #c82333;
+}
 
-        .container ul {
-            padding-left: 20px;
-            list-style-type: none;
-        }
+.logout-container button:active {
+    background-color: #bd2130;
+}
 
-        .container ul li {
-            padding: 8px 0;
-            position: relative;
-            animation: fadeInUp 1s ease-in-out;
-        }
+.container ul {
+    padding-left: 20px;
+    list-style-type: none;
+}
 
-        .container ul li::before {
-            content: "\f3c5"; /* Map Marker icon from FontAwesome */
-            font-family: 'FontAwesome';
-            font-size: 1rem;
-            color: #28a745;
-            position: absolute;
-            left: -20px;
-            top: 5px;
-        }
+.container ul li {
+    padding: 8px 0;
+    position: relative;
+    animation: fadeInUp 1s ease-in-out;
+}
 
-        @keyframes fadeInUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+.container ul li::before {
+    content: "\f3c5"; /* Map Marker icon from FontAwesome */
+    font-family: 'FontAwesome';
+    font-size: 1rem;
+    color: #28a745;
+    position: absolute;
+    left: -20px;
+    top: 5px;
+}
+
+@keyframes fadeInUp {
+    from
+    {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to
+    {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

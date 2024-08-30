@@ -362,9 +362,37 @@ def fetch_locations(id):
     print(employee.loc_name)
     if employee is None:
         return jsonify({"error": "Employee not found"}), 404
+    employee_data = {
+        'id': employee.id,
+        'name': employee.name,
+        'position': employee.position,
+        'hrs_worked': employee.hrs_worked,
+        'location':employee.loc_name,
+        # Replace 'date' with the actual field name if different
+        # Add other fields as needed
+    }
 
-    return jsonify(employee.loc_name), 200
-
+    return jsonify(employee_data), 200
+'''
+@app.route('/employees/ids/<int:employee_id>', methods=['GET'])
+def get_employeeee(employee_id):
+    # Fetch the employee using the employee_id
+    employee = Employee.query.get_or_404(employee_id)
+    
+    # Extract employee data (adjust the attribute names based on your model)
+    employee_data = {
+        'id': employee.id,
+        'name': employee.name,
+        'position': employee.position,
+        'hrs_worked': employee.hrs_worked,
+        'location':employee.loc_name,
+        # Replace 'date' with the actual field name if different
+        # Add other fields as needed
+    }
+    
+    # Return the employee data as JSON
+    return jsonify(employee_data)
+'''
 @app.route('/employees/username/<string:username>', methods=['GET'])
 def get_employee(username):
     # Query to get the specific employee by id

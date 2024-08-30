@@ -1,6 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Bio-Data</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -213,10 +217,8 @@
             }
         }
     </style>
-
-    <title>user page</title>
 </head>
-<body >
+<body>
 <div class="container">
     <h1>Employee Bio-Data</h1>
     <div class="bio-data">
@@ -236,24 +238,16 @@
             <label for="location">Location:</label>
             <span id="location"></span>
         </div>
-        <div class="item">
-            <label for="hrswork">Hours worked</label>
-            <span id="hrswork"></span>
-        </div>
-
     </div>
 
-    <button id="getloc" onclick="getLocation();"><i class="fas fa-calendar-check"></i> Attendance Log and start location tracking</button>
+    <button id="attendance-log"><i class="fas fa-calendar-check"></i> Attendance Log</button>
 </div>
 
-    <!-- Logout section -->
-    <div class="logout-container">
-        <h1 >Logout</h1>
-        <button id="logoutButton">
-            Logout
-        </button>
-    </div>
+<script>
+    document.getElementById('attendance-log').addEventListener('click', function() {
+        alert('Attendance Log button pressed');
+    });
 
-    <script src="geolocation.js"></script>
+</script>
 </body>
 </html>

@@ -69,8 +69,8 @@ async function fetchLocations(id) {
         console.log('Employee data:', employee);
 
         // Use the specific property from the employee object to fetch location data
-        const loc_name = employee;  // Adjust this based on your data structure
-
+        const loc_name = employee.location;  // Adjust this based on your data structure
+        displayEmployeeDetails(employee)
         // Fetch location data using the loc_name
         const locationResponse = await fetch(`https://${ip_ad}:5001/Location/${loc_name}`, {
             method: 'GET',
@@ -89,10 +89,17 @@ async function fetchLocations(id) {
             const latitu = latlon.latitude;
             const longitu = latlon.longitude;
             const dist = getDistanceFromLatLonInKm(latitude, longitude, latitu, longitu)*1000;
+            console.log(accuracy,timestamp);
             let status = dist <= 250 ? 'True' : 'False';
                 console.log(dist);
+                if(accuracy<30){
                 pushdata(Id,dist,timestamp,status);
                 return dist;
+                }
+                else{
+                    console.log("not accurate enough")
+                    return "not accurate enough";
+                }
             //return { latitude, longitude };
 
         } catch (error) {
@@ -100,6 +107,14 @@ async function fetchLocations(id) {
                 alert(`An error occurred: ${error.message}`);
             }
             }
+        function displayEmployeeDetails(employee) {
+            console.log('Displaying employee details...');
+            document.getElementById('id').textContent = employee.id;
+            document.getElementById('name').textContent = employee.name;
+            document.getElementById('position').textContent = employee.position;
+            document.getElementById('location').textContent = employee.location;
+            document.getElementById('hrswork').textContent = employee.hrs_worked;
+        }
 
     // Example usage:
 
@@ -131,11 +146,12 @@ async function fetchLocations(id) {
         const urlParams = new URLSearchParams(queryString);
         const Id = decodeURIComponent(urlParams.get('userId'));
         console.log(Id)
+        fetchLocations(Id);
         //const status = decodeURIComponent(urlParams.get('status'));
         //const Id = getQueryParam('userId');
         //console.log(Id)
 
-
+/*
     async function useFetchLocations() {
 
         const dist = await fetchLocations(Id);
@@ -154,6 +170,7 @@ async function fetchLocations(id) {
          //return dist;// dist now contains the resolved value
     }
     useFetchLocations();
+    */
     function autoClickButton() {
             // Find the button element by its ID
             const button = document.getElementById('getloc');
