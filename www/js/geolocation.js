@@ -127,15 +127,17 @@ async function fetchLocations(id) {
                     throw error; // Re-throw the error after logging it
                 }
         }
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
-        const Id = getQueryParam('userId');
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const Id = decodeURIComponent(urlParams.get('userId'));
+        console.log(Id)
+        //const status = decodeURIComponent(urlParams.get('status'));
+        //const Id = getQueryParam('userId');
         //console.log(Id)
 
 
     async function useFetchLocations() {
+
         const dist = await fetchLocations(Id);
         console.log(new Date(timestamp));
         document.getElementById('location-info').innerHTML = '';

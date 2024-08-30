@@ -1,178 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geo-Attendance/Admin-Login</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #e9ecef;
-            color: #212529;
-        }
+//import { ip_ad } from "../js/commonvar.js";
 
-        .container {
-            text-align: center;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #ffffff;
-        }
+//console.log(ip_ad);
 
-        .container h1 {
-            margin-bottom: 30px;
-            font-size: 28px;
-            color: #343a40;
-        }
+async function checkValid() {
+const ip_ad="192.168.0.110";
+//const ip_ad="192.168.230.122";
+console.log('checkValid function called');
+                    const username = document.getElementById('loginId').value;
+                    const password = document.getElementById('password').value;
 
-        button {
-            padding: 12px 24px;
-            margin: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px;
-            background-color: #28a745;
-            color: #ffffff;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+                    if (!username || !password) {
+                        alert('Please enter both ');
+                        return;
+                    }
 
-        button:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-        }
+                    try {
+                        const response = await fetch(`https://${ip_ad}:5001/login`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ username,password })
+                            //console.log(username)
+                        });
+                        //document.getElementById('checkFingerprintBtn').addEventListener('click', function() {
 
-        button:active {
-            background-color: #1e7e34;
-            transform: translateY(0);
-        }
+                        const tem = await authenticateWithFingerprint();
 
-        .logout-container {
-            margin-top: 40px;
-        }
+                        if (response.status == 200 && tem) {
+                            alert('login successfully');
 
-        .logout-container h1 {
-            margin-bottom: 20px;
-            font-size: 22px;
-            color: #dc3545;
-        }
+                            window.location.href = 'js/adminlogin.html';
 
-        .logout-container button {
-            background-color: #dc3545;
-        }
 
-        .logout-container button:hover {
-            background-color: #c82333;
-        }
+                        }else if(response.status == 202 && tem){
+                            alert('login successful');
+                            console.log(username)
+                            const url = `https://${ip_ad}:5001/employees/username/${username}`;
+                            console.log(url)
+                            fetch(url)
+                              .then(response => {
+                                console.log('Response status:', response.status);
+                                if (!response.ok) {
+                                  throw new Error('Employee not found');
+                                }
+                                return response.json();
+                              })
+                              .then(data => {
+                                // Handle the employee data here
+                                console.log('Employee data:', data);
+                                const Id = data;
+                                window.location.href = `js/getlocation.html?userId=${Id}`;
+                              })
+                              .catch(error => {
+                                // Handle errors here
+                                console.error('Error:', error);
+                              });
 
-        .logout-container button:active {
-            background-color: #bd2130;
-        }
-    </style>
-</head>
-<body>
 
-<div class="container">
-    <h1>Employee Management</h1>
-    <button id="view-employees-btn">View Employees</button>
-    <button id="add-employees-btn">Add Employees</button>
-    <button id="add-locations-btn">Add Locations</button>
-</div>
+                        }
 
-<div class="container logout-container">
-    <h1>Logout</h1>
-    <button id="logout-btn">Logout</button>
-</div>
+                         else {
+                            alert('wrong username or password ,try again');
 
-<script >
-    document.getElementById('view-employees-btn').addEventListener('click', function() {
-        window.location.href = 'viewemp.html';
-    });
+                        }
 
-    document.getElementById('add-employees-btn').addEventListener('click', function() {
-        window.location.href = 'login.html';
-    });
+                    } catch (error) {
+                        console.error('Error logging in', error);
+                    }
+                }
+                /*
+                document.addEventListener('deviceready', function() {
+                    document.getElementById('checkFingerprintBtn').addEventListener('click', function() {
+                        authenticateWithFingerprint().then(isAuthenticated => {
+                            if (isAuthenticated) {
+                                alert("Authentication successful");
+                            } else {
+                                alert("Authentication failed or fingerprint not available");
+                            }
+                        }).catch(error => {
+                            console.error("Error during fingerprint authentication:", error);
+                        });
+                    });
+                }, false);
+                */
 
-    document.getElementById('add-locations-btn').addEventListener('click',function(){
-        window.location.href = 'addloc.html';
-    });
+               async function authenticateWithFingerprint() {
+                    return new Promise((resolve, reject) => {
+                        // Check if fingerprint authentication is available
+                        Fingerprint.isAvailable(function(result) {
+                            console.log("Fingerprint available: " + result);
 
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('logout-btn').addEventListener('click', async function() {
-            try {
-                window.location.href = 'logout.html';
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred during logout. Please try again.');
-            }
-        });
-         });
-</script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee List</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-<h1>Employee List</h1>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Position</th>
-        <th>distance</th>
-        <th>time</th>
-        <th>status</th>
-    </tr>
-    </thead>
-    <tbody id="employee-table-body">
-    <!-- Employee rows will be inserted here -->
-    </tbody>
-</table>
-<div class="logout-container">
-    <h1>Logout</h1>
-    <button id="logoutButton">Logout</button>
-</div>
-<script type="module" src="viewemp.js"></script>
-</body>
-</html>
+                            // Proceed with fingerprint authentication
+                            Fingerprint.show({
+                                description: "Please authenticate"
+                            }, function() {
+                                // Authentication successful
+                                resolve(true);
+                            }, function(error) {
+                                // Authentication failed
+                                console.error("Authentication failed: " + error.message);
+                                resolve(false); // Resolve with false if authentication fails
+                            });
+                        }, function(error) {
+                            // Fingerprint authentication not available
+                            console.error("Fingerprint not available: " + error.message);
+                            resolve(false); // Resolve with false if fingerprint is not available
+                        });
+                    });
+                }

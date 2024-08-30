@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fingerprint Check</title>
+    <script src="../cordova.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #e9ecef;
+            color: #212529;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+
+        .container h1 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: #343a40;
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #28a745;
+            color: #ffffff;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            background-color: #1e7e34;
+            transform: translateY(0);
+        }
+
+        .logout-container {
+            margin-top: 40px;
+        }
+
+        .logout-container h1 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #dc3545;
+        }
+
+        .logout-container button {
+            background-color: #dc3545;
+        }
+
+        .logout-container button:hover {
+            background-color: #c82333;
+        }
+
+        .logout-container button:active {
+            background-color: #bd2130;
+        }
+    </style>
+</head>
+<body>
+<h2>Fingerprint Authentication Check</h2>
+<button id="authFingerprintBtn">Authenticate with Fingerprint</button>
+
+<script>
+    document.addEventListener('deviceready', function() {
+        document.getElementById('authFingerprintBtn').addEventListener('click', function() {
+            // Decode URL parameters
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const userId = decodeURIComponent(urlParams.get('userId'));
+            const status = decodeURIComponent(urlParams.get('status'));
+
+            // Check if fingerprint authentication is available
+            Fingerprint.isAvailable(function(result) {
+                console.log("Fingerprint available: " + result);
+
+                // Proceed with fingerprint authentication
+                Fingerprint.show({
+                    description: "Please authenticate"
+                }, function() {
+                    alert("Authentication successful");
+
+                    // Redirect based on status
+                    if (status == 200) {
+                        window.location.href = 'adminlogin.html';
+                    } else if (status == 202) {
+                        window.location.href = `getlocation.html?userId=${encodeURIComponent(userId)}`;
+                    }
+                }, function(error) {
+                    alert("Authentication failed: " + error.message);
+                });
+            }, function(error) {
+                alert("Fingerprint not available: " + error.message);
+            });
+        });
+    }, false);
+</script>
+
+</body>
+</html>
