@@ -66,6 +66,16 @@ class LogInOut(db.Model):
     lati = db.Column(db.DOUBLE, nullable=False)
 
 
+class requests(db.Model):
+    sno= db.Column(db.Integer,primary_key=True,autoincrement=True)
+    id = db.Column(db.Integer)
+    dist =db.Column(db.DOUBLE, nullable=False)
+    time = db.Column(db.DATETIME(),nullable=False)
+    longi = db.Column(db.DOUBLE, nullable=False)
+    lati = db.Column(db.DOUBLE, nullable=False)
+    status = db.Column(db.BOOLEAN(),default=False)
+    stat = db.Column(db.String(20),default=False)
+
 with app.app_context():
     
     #db.drop_all()  # Optionally drop all tables if you want a fresh start
@@ -473,9 +483,41 @@ def delete_employee(employee_id):
     db.session.close()
     return jsonify({'message': 'Employee deleted successfully'})
 
+@app.route('/requests/<int:sno>/approve', methods=['PATCH'])
+def approve_request(sno):
+    request_entry = requests.query.get(sno)
+    if request_entry is None:
+        return jsonify({"error": "Request not found"}), 404
+
+    request_entry.status = True  # Set the status to approved
+    db.session.commit()
+    db.session.close()
+    return jsonify({"message": "Request approved successfully!"}), 200
+
+@app.route('/requests/<int:sno>/disapprove', methods=['PATCH'])
+def disapprove_request(sno):
+    request_entry = requests.query.get(sno)
+    if request_entry is None:
+        return jsonify({"error": "Request not found"}), 404
+
+    request_entry.status = False  # Set the status to disapproved
+    db.session.commit()
+    db.session.close()
+    return jsonify({"message": "Request disapproved successfully!"}), 200
+
+@app.route('/requests', methods=['GET'])
+def get_requests():
+    all_requests = requests.query.all()
+    requests_list = [model_to_dict(req) for req in all_requests]
+    return jsonify(requests_list), 200
+
+
 if __name__ == '__main__':
 #    logging.basicConfig(level=logging.DEBUG)
-    context = ("cert.pem", "key.pem")
+    context = (
+        r"C:\Users\sprra\server.crt",  
+        r"C:\Users\sprra\server.key"
+    )
 
     with app.app_context():
         admin = Employee.query.filter_by(username='admin').first()
@@ -498,7 +540,7 @@ if __name__ == '__main__':
             db.session.add(new_employee)
             db.session.commit()
             db.session.close()
-    app.run(host = '192.168.0.110',port = 5000,ssl_context=context)
+    app.run(host = '192.168.56.1',port = 5000,ssl_context=context)
     
 #openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
 #192.168.230.112
