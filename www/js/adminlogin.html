@@ -85,8 +85,9 @@
     <button id="view-employees-btn">View Employees</button>
     <button id="add-employees-btn">Add Employees</button>
     <button id="add-locations-btn">Add Locations</button>
-    <button id="disp-logs-btn">display logs</button>
-    <button id="disp-pos-btn">display all users</button>
+    <button id="disp-logs-btn">Display Logs</button>
+    <button id="disp-pos-btn">Display All Users</button>
+    <button id="manual-logins-btn">Manual Logins</button>
 </div>
 
 <div class="container logout-container">
@@ -103,14 +104,20 @@
         window.location.href = 'login.html';
     });
 
-    document.getElementById('add-locations-btn').addEventListener('click',function(){
+    document.getElementById('add-locations-btn').addEventListener('click', function(){
         window.location.href = 'addloc.html';
     });
-    document.getElementById('disp-logs-btn').addEventListener('click',function(){
+
+    document.getElementById('disp-logs-btn').addEventListener('click', function(){
         window.location.href = 'displogs.html';
     });
-    document.getElementById('disp-pos-btn').addEventListener('click',function(){
+
+    document.getElementById('disp-pos-btn').addEventListener('click', function(){
         window.location.href = 'disp_positions.html';
+    });
+
+    document.getElementById('manual-logins-btn').addEventListener('click', function(){
+        window.location.href = 'manual_login.html';
     });
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -122,7 +129,7 @@
                 alert('An error occurred during logout. Please try again.');
             }
         });
-         });
+    });
 </script>
 </body>
 </html>
