@@ -170,3 +170,37 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
+async function requestManualLogin() {
+    const id = new URLSearchParams(window.location.search).get('userId');
+    try {
+        const response = await fetch(`https://${ip_ad}/Location/manual-login-request`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error requesting manual login: ${response.statusText}`);
+        }
+
+        alert('Manual login request has been sent successfully.');
+    } catch (error) {
+        console.error('Error:', error);
+        alert(`An error occurred: ${error.message}`);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('logoutButton').addEventListener('click', async function() {
+        try {
+            window.location.href = 'logout.html';
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred during logout. Please try again.');
+        }
+    });
+});
