@@ -1,7 +1,11 @@
-
+sessionStorage.setItem('ip_ad', '192.168.0.110:5000');
+cordova.plugins.backgroundMode.enable();
 
     async function checkValid() {
-        const ip_ad = "192.168.0.110";
+        const ip_ad = sessionStorage.getItem('ip_ad');
+
+        //const ip_ad = "192.168.0.110";
+        //const ip_ad="192.168.137.213";
         console.log('checkValid function called');
         const username = document.getElementById('loginId').value;
         const password = document.getElementById('password').value;
@@ -12,7 +16,7 @@
         }
 
         try {
-            const response = await fetch(`https://${ip_ad}:5001/login`, {
+            const response = await fetch(`https://${ip_ad}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -39,7 +43,7 @@
             } else if (response.status === 202) {
                 alert('Login successful');
                 console.log(username);
-                const url = `https://${ip_ad}:5001/employees/username/${username}`;
+                const url = `https://${ip_ad}/employees/username/${username}`;
                 console.log('Fetching employee data from:', url);
 
                 fetch(url)

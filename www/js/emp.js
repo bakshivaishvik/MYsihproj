@@ -1,6 +1,8 @@
 //import {ip_ad} from "./commonvar.js";
-const ip_ad="192.168.0.110";
+//const ip_ad="192.168.0.110";
 //const ip_ad="192.168.230.122";
+//const ip_ad="192.168.137.213";
+const ip_ad = sessionStorage.getItem('ip_ad');
 document.getElementById('logoutButton').addEventListener('click', async function() {
             try {
                 // Make a request to the logout route on the server
@@ -20,7 +22,7 @@ document.getElementById('logoutButton').addEventListener('click', async function
 
 async function fetchEmployees() {
             try {
-                const response = await fetch(`https://${ip_ad}:5001/employees`);
+                const response = await fetch(`https://${ip_ad}/employees`);
                 const employees = await response.json();
                 const employeeList = document.getElementById('employeeList');
                 employeeList.innerHTML = ''; // Clear the list
@@ -52,7 +54,7 @@ async function fetchEmployees() {
             }
 
             try {
-                const response = await fetch(`https://${ip_ad}:5001/employees`, {
+                const response = await fetch(`https://${ip_ad}/employees`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -73,7 +75,7 @@ async function fetchEmployees() {
 
         async function deleteEmployee(employeeId) {
             try {
-                const response = await fetch(`https://${ip_ad}:5001/employees/${employeeId}`, {
+                const response = await fetch(`https://${ip_ad}/employees/${employeeId}`, {
                     method: 'DELETE'
                 });
 
@@ -93,7 +95,7 @@ async function fetchEmployees() {
                         //updateEmployeeLocation(employeeId, newLocName);
                         const employeeId=document.getElementById('id_user').value;
                         const newLocName=document.getElementById('loca_user').value;
-                        const response = await fetch(`https://${ip_ad}:5001/employees/${employeeId}/update_pass`, {
+                        const response = await fetch(`https://${ip_ad}/employees/${employeeId}/update_pass`, {
                             method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json'

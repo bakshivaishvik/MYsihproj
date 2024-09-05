@@ -15,8 +15,11 @@
   "devDependencies": {
     "cordova-android": "^13.0.0",
     "cordova-browser": "^7.0.0",
+    "cordova-plugin-background-mode": "^0.7.3",
     "cordova-plugin-camera": "^7.0.0",
+    "cordova-plugin-device": "^3.0.0",
     "cordova-plugin-fingerprint-aio": "^6.0.0",
+    "cordova-plugin-firebase": "^2.0.6",
     "cordova-plugin-geolocation": "^5.0.0",
     "cordova-plugin-statusbar": "^4.0.0"
   },
@@ -33,7 +36,8 @@
         "ANDROIDX_CORE_VERSION": "1.6.+"
       },
       "cordova-plugin-fingerprint-aio": {},
-      "cordova-plugin-statusbar": {}
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-background-mode": {}
     }
   }
 }

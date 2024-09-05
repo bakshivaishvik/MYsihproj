@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash, session
+from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -22,6 +23,7 @@ class Location(db.Model):
     name = db.Column(db.String(100),primary_key=True, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+    
     description = db.Column(db.String(200))
     def to_dict(self):
         return {
@@ -60,8 +62,8 @@ class LogInOut(db.Model):
     dist =db.Column(db.DOUBLE, nullable=False)
     time = db.Column(db.DATETIME(),nullable=False)
     status = db.Column(db.BOOLEAN(),default=False)
-    
-    
+    longi = db.Column(db.DOUBLE, nullable=False)
+    lati = db.Column(db.DOUBLE, nullable=False)
 
 
 with app.app_context():
@@ -98,7 +100,7 @@ def get_working_hours():
     
 
 def calculate_working_hours(employee_id):
-    logs = LogInOut.query.filter_by(id=employee_id).order_by(LogInOut.sno.desc()).all()
+    logs = LogInOut.query.filter_by(id=employee_id).order_by(LogInOut.time.desc()).all()
     
     if not logs:
         return "No records found for this employee"
@@ -253,10 +255,46 @@ def get_locatione(loc_name):
 
 
 ######################################################################
+
+
+@app.route('/latest_locations', methods=['GET'])
+def get_latest_locations():
+    # Subquery to get the latest time for each employee
+    subquery = db.session.query(
+        LogInOut.id,
+        func.max(LogInOut.time).label('latest_time')
+    ).group_by(LogInOut.id).subquery()
+
+    # Query to get the latest log for each employee
+    latest_logs = db.session.query(
+        LogInOut.id,
+        LogInOut.lati,
+        LogInOut.longi,
+        LogInOut.time
+    ).join(
+        subquery,
+        (LogInOut.id == subquery.c.id) & (LogInOut.time == subquery.c.latest_time)
+    ).all()
+
+    # Format the result as a list of dictionaries
+    result = [
+        {
+            'id': log.id,
+            'latitude': log.lati,
+            'longitude': log.longi,
+            'time': log.time
+        } for log in latest_logs
+    ]
+    print(result)
+    return jsonify(result)
+
+
+
+
 @app.route('/LogInOut/<int:id>', methods=['GET'])
 def get_previous_employee(id):
     latest_log = LogInOut.query.filter_by(id=id)\
-                               .order_by(LogInOut.sno.desc())\
+                               .order_by(LogInOut.time.desc())\
                                .first()
 
     if latest_log is None:
@@ -287,7 +325,7 @@ def get_logins():
     '''
     logins=LogInOut.query.all()
     
-    res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status} for emp in logins]
+    res = [{'id': emp.id, 'dist': emp.dist, 'time': emp.time,'status':emp.status,'longi':emp.longi,'lati':emp.lati} for emp in logins]
     print(res)
     return jsonify(res)
 
@@ -301,12 +339,12 @@ def add_employees():
     else:
         status=False
     #print()
-    employee = LogInOut.query.filter_by(id=id).order_by(LogInOut.sno.desc()).first()
+    employee = LogInOut.query.filter_by(id=id).order_by(LogInOut.time.desc()).first()
     #print("dist is"+data['dist'])
     if status==employee.status:
         return jsonify({'message': 'same as before'}), 201
     else:
-        new_employee = LogInOut(id=data['Id'],dist=data['dist'], time=datetime.utcfromtimestamp(data['time']/1000),status=status)#to be changed
+        new_employee = LogInOut(id=data['Id'],dist=data['dist'], time=datetime.utcfromtimestamp(data['time']/1000),status=status,longi=data['longitude'],lati=data['latitude'])#to be changed
         #print(bool(data['status']))
         
         db.session.add(new_employee)
@@ -419,7 +457,7 @@ def add_employee():
     db.session.add(new_employee)
     db.session.commit()
     db.session.close()
-    new_employe = LogInOut(id=data['Id'],dist=0, time=datetime.now(),status=True)#to be changed
+    new_employe = LogInOut(id=data['Id'],dist=0, time=datetime.now(),status=True,longi=0.0,lati=0.0)#to be changed
     #print(type(time))
 
     db.session.add(new_employe)
@@ -451,7 +489,7 @@ if __name__ == '__main__':
                 password=generate_password_hash('admin123'),
                 hrs_worked=0.0
             )
-            new_employe = LogInOut(id=1,dist=0, time=datetime.now(),status=True)#to be changed
+            new_employe = LogInOut(id=1,dist=0, time=datetime.now(),status=True,longi=long,lati=lat)#to be changed
             #print(type(time))
 
             db.session.add(new_employe)
@@ -460,7 +498,9 @@ if __name__ == '__main__':
             db.session.add(new_employee)
             db.session.commit()
             db.session.close()
-    app.run(host = '192.168.0.110',port = 5001,ssl_context=context)
+    app.run(host = '192.168.0.110',port = 5000,ssl_context=context)
     
 #openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
 #192.168.230.112
+#192.168.0.106
+#192.168.137.213

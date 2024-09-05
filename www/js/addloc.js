@@ -1,6 +1,8 @@
 //import {ip_ad} from "./commonvar.js";
-const ip_ad="192.168.0.110";
+//const ip_ad="192.168.0.110";
 //const ip_ad="192.168.230.122";
+//const ip_ad="192.168.137.213";
+const ip_ad = sessionStorage.getItem('ip_ad');
 console.log(ip_ad)
 document.getElementById('locationForm').addEventListener('submit', async function(event) {
             event.preventDefault(); // Prevent the default form submission
@@ -15,7 +17,7 @@ document.getElementById('locationForm').addEventListener('submit', async functio
 
             try {
                 // Send the form data using fetch
-                const response = await fetch(`https://${ip_ad}:5001/Location`, {
+                const response = await fetch(`https://${ip_ad}/Location`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -54,7 +56,7 @@ document.getElementById('locationForm').addEventListener('submit', async functio
 
             // Send a DELETE request to the Flask API
             try {
-                const response = await fetch(`https://${ip_ad}:5001/Location/${locationId}`, {
+                const response = await fetch(`https://${ip_ad}/Location/${locationId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -78,7 +80,7 @@ document.getElementById('locationForm').addEventListener('submit', async functio
         async function fetchLocations() {
                     try {
                         // Send a GET request to the Flask API to retrieve location data
-                        const response = await fetch(`https://${ip_ad}:5001/Location`,{
+                        const response = await fetch(`https://${ip_ad}/Location`,{
                                   method: 'GET',
                                       headers: {
                                               'Content-Type': 'application/json'
@@ -110,7 +112,7 @@ document.getElementById('locationForm').addEventListener('submit', async functio
                                 //updateEmployeeLocation(employeeId, newLocName);
                                 const employeeId=document.getElementById('id_user').value;
                                 const newLocName=document.getElementById('loca_user').value;
-                                const response = await fetch(`https://${ip_ad}:5001/employees/${employeeId}/update_location`, {
+                                const response = await fetch(`https://${ip_ad}/employees/${employeeId}/update_location`, {
                                     method: 'PATCH',
                                     headers: {
                                         'Content-Type': 'application/json'

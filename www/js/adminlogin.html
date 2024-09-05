@@ -86,6 +86,7 @@
     <button id="add-employees-btn">Add Employees</button>
     <button id="add-locations-btn">Add Locations</button>
     <button id="disp-logs-btn">display logs</button>
+    <button id="disp-pos-btn">display all users</button>
 </div>
 
 <div class="container logout-container">
@@ -107,6 +108,9 @@
     });
     document.getElementById('disp-logs-btn').addEventListener('click',function(){
         window.location.href = 'displogs.html';
+    });
+    document.getElementById('disp-pos-btn').addEventListener('click',function(){
+        window.location.href = 'disp_positions.html';
     });
 
     document.addEventListener('DOMContentLoaded', function() {

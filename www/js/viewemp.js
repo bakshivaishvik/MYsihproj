@@ -1,11 +1,12 @@
 //import {ip_ad} from "./commonvar.js";
-const ip_ad="192.168.0.110";
+//const ip_ad="192.168.0.110";
 //const ip_ad="192.168.230.122";
-
+//const ip_ad="192.168.137.213";
+const ip_ad = sessionStorage.getItem('ip_ad');
 
 async function updateAllEmployeesHours() {
     try {
-        const response = await fetch(`https://${ip_ad}:5001/employee/working_hours`, {
+        const response = await fetch(`https://${ip_ad}/employee/working_hours`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -26,7 +27,7 @@ async function updateAllEmployeesHours() {
 
 async function fetchEmployees() {
     try {
-        const response = await fetch(`https://${ip_ad}:5001/employees`, {
+        const response = await fetch(`https://${ip_ad}/employees`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -46,7 +47,7 @@ async function fetchEmployees() {
 
 async function fetchEmployee(emp) {
     try {
-        const response2 = await fetch(`https://${ip_ad}:5001/LogInOut/${emp.id}`, {
+        const response2 = await fetch(`https://${ip_ad}/LogInOut/${emp.id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

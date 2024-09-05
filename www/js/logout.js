@@ -14,3 +14,6 @@ document.getElementById('logoutButton').addEventListener('click', async function
                 alert('An error occurred during logout. Please try again.');
             }
         });
+        document.addEventListener('deviceready', function () {
+            cordova.plugins.backgroundMode.disable();
+        }, false);

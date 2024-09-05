@@ -1,12 +1,14 @@
-const ip_ad="192.168.0.110"
+//const ip_ad="192.168.0.110"
 //const ip_ad="192.168.230.122";
+//const ip_ad="192.168.137.213";
+const ip_ad = sessionStorage.getItem('ip_ad');
 document.getElementById('employeeForm').addEventListener('submit', async (event) => {
     event.preventDefault(); // Prevent the form from submitting normally
 
     const employeeId = document.getElementById('employeeId').value;
 
     try {
-        const response = await fetch(`https://${ip_ad}:5001/LogInOut/allemp/${employeeId}`, {
+        const response = await fetch(`https://${ip_ad}/LogInOut/allemp/${employeeId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
