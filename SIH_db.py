@@ -69,7 +69,8 @@ class LogInOut(db.Model):
 class requests(db.Model):
     sno= db.Column(db.Integer,primary_key=True,autoincrement=True)
     id = db.Column(db.Integer)
-    dist =db.Column(db.DOUBLE, nullable=False)
+    name = db.Column(db.String(20),default=False)
+    dist = db.Column(db.DOUBLE, nullable=False)
     time = db.Column(db.DATETIME(),nullable=False)
     longi = db.Column(db.DOUBLE, nullable=False)
     lati = db.Column(db.DOUBLE, nullable=False)
@@ -485,39 +486,85 @@ def delete_employee(employee_id):
 
 @app.route('/requests/<int:sno>/approve', methods=['PATCH'])
 def approve_request(sno):
-    request_entry = requests.query.get(sno)
+    request_entry = requests.query.filter_by(id=sno).order_by(requests.sno.desc()).first()
     if request_entry is None:
         return jsonify({"error": "Request not found"}), 404
-
-    request_entry.status = True  # Set the status to approved
+    
+    request_entry.stat = "approved"  # Set the status to approved
+    copy_request_to_loginout(sno)
     db.session.commit()
     db.session.close()
     return jsonify({"message": "Request approved successfully!"}), 200
 
 @app.route('/requests/<int:sno>/disapprove', methods=['PATCH'])
 def disapprove_request(sno):
-    request_entry = requests.query.get(sno)
+    request_entry = requests.query.filter_by(id=sno).order_by(requests.sno.desc()).first()
     if request_entry is None:
         return jsonify({"error": "Request not found"}), 404
-
-    request_entry.status = False  # Set the status to disapproved
+    
+    request_entry.stat = "disapproved"  # Set the status to disapproved
     db.session.commit()
     db.session.close()
     return jsonify({"message": "Request disapproved successfully!"}), 200
 
 @app.route('/requests', methods=['GET'])
 def get_requests():
-    all_requests = requests.query.all()
+    all_requests = requests.query.filter_by(stat="Pending").all()
+    #print(all_requests)
     requests_list = [model_to_dict(req) for req in all_requests]
     return jsonify(requests_list), 200
 
+@app.route('/requests', methods=['POST'])
+def post_requests():
+    data = request.get_json()
+    
+    #print()
+    
+    #print("dist is"+data['dist'])
+    
+    new_employee = requests(id=data['Id'],dist=data['dist'], time=datetime.utcfromtimestamp(data['time']/1000),status=False,longi=data['longitude'],lati=data['latitude'],stat="Pending")#to be changed
+    #print(bool(data['status']))
+    
+    db.session.add(new_employee)
+    db.session.commit()
+    db.session.close()
+    return jsonify({'message': 'updated'}), 201
+
+
+
+def copy_request_to_loginout(sno):
+    # Query the row from the requests table
+    request_entry = requests.query.filter_by(id=sno).first()
+    
+    if not request_entry:
+        return jsonify({'error': 'Request with sno {} not found'.format(sno)}), 404
+
+    try:
+        # Create a new LogInOut instance using data from the request_entry
+        new_entry = LogInOut(
+            id=request_entry.id,
+            dist=request_entry.dist,
+            time=request_entry.time,
+            status=request_entry.status,
+            longi=request_entry.longi,
+            lati=request_entry.lati
+        )
+        
+        # Add the new entry to the session
+        db.session.add(new_entry)
+        # Commit the transaction
+        db.session.commit()
+        
+        return jsonify({'message': 'Request copied to LogInOut successfully', 'id': new_entry.sno}), 201
+
+    except Exception as e:
+        # Rollback in case of error
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
 #    logging.basicConfig(level=logging.DEBUG)
-    context = (
-        r"C:\Users\sprra\server.crt",  
-        r"C:\Users\sprra\server.key"
-    )
+    context = ("cert.pem","key.pem")
 
     with app.app_context():
         admin = Employee.query.filter_by(username='admin').first()
@@ -540,7 +587,7 @@ if __name__ == '__main__':
             db.session.add(new_employee)
             db.session.commit()
             db.session.close()
-    app.run(host = '192.168.56.1',port = 5000,ssl_context=context)
+    app.run(host = '192.168.0.110',port = 5000,ssl_context=context)
     
 #openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
 #192.168.230.112

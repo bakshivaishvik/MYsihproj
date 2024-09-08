@@ -42,8 +42,26 @@
 <div class="container">
     <h1>Welcome</h1>
     <p>Please choose an option:</p>
-    <a href="getlocation.html" class="button">geolocation based login</a>
-    <a href="manual_login.html" class="button">manual login</a>
+
+    <button id="geolocation_based_login">geolocation based login</button>
+    <button id="manual_login">manual login</button>
+    <button id="check_logs">check logs</button>
 </div>
+<script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const Id = decodeURIComponent(urlParams.get('userId'));
+    document.getElementById('geolocation_based_login').addEventListener('click', function() {
+        window.location.href = `getlocation.html?userId=${encodeURIComponent(Id)}`;
+    });
+
+    document.getElementById('manual_login').addEventListener('click', function() {
+        window.location.href = `user_manual_login.html?userId=${encodeURIComponent(Id)}`;
+    });
+
+    document.getElementById('check_logs').addEventListener('click', function(){
+        window.location.href = `logs_user.html?userId=${encodeURIComponent(Id)}`;
+    });
+</script>
 </body>
 </html>

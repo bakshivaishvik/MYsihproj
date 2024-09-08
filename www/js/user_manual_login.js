@@ -11,26 +11,25 @@ function onDeviceReady() {
     // Listen for background mode activation
     cordova.plugins.backgroundMode.onactivate = function() {
         console.log("Background mode activated");
+        // Execute your entire code here to ensure it runs in the background
         runAppInBackground();
     };
 
-    // Handle background mode deactivation
+    // Optional: Handle background mode deactivation if needed
     cordova.plugins.backgroundMode.ondeactivate = function() {
         console.log("Background mode deactivated");
+        // Any code that should only run when the app is in the foreground can go here
     };
 
-    // Run the app's code initially
+    // Run your app's code initially (in case the app is already in the foreground)
     runAppInBackground();
-
-    // Run the app code every 2 minutes (120,000 ms)
-    setInterval(runAppInBackground, 120000);
 }
 
 function runAppInBackground() {
     getLocation();
+    // Any other functions or code you want to execute in the background
 }
-
-var latitude, longitude, accuracy, timestamp, dist, time, Id;
+var latitude,longitude,accuracy,timestamp,dist,time,Id;
 
 function getLocation() {
     var options = {
@@ -47,17 +46,17 @@ function onSuccess(position) {
     longitude = position.coords.longitude;
     accuracy = position.coords.accuracy;
     timestamp = position.timestamp;
-    time = timestamp;
-
+    time=timestamp;
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-        const R = 6371; // Radius of Earth in kilometers
+        const R = 6371;
         const dLat = deg2rad(lat2 - lat1);
         const dLon = deg2rad(lon2 - lon1);
-        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
             Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const d = R * c; // Distance in km
+        const d = R * c;
         return d;
     }
 
@@ -66,9 +65,8 @@ function onSuccess(position) {
     }
 
     async function fetchLocations() {
-        const id = decodeURIComponent(urlParams.get('userId'));
-        Id = id;
-
+    const id = decodeURIComponent(urlParams.get('userId'));
+    Id=id;
         try {
             const response = await fetch(`https://${ip_ad}/employees/id/${id}`, {
                 method: 'GET',
@@ -103,19 +101,18 @@ function onSuccess(position) {
             const longitu = latlon.longitude;
             dist = getDistanceFromLatLonInKm(latitude, longitude, latitu, longitu) * 1000;
 
-            console.log(accuracy, timestamp);
+            console.log(accuracy);
             let status = dist <= 250 ? 'True' : 'False';
             console.log(dist);
-
-            if (accuracy < 30) {
-                pushdata(id, dist, timestamp, status, latitude, longitude);
-                return dist;
-            } else {
-                console.log("Not accurate enough");
-                // If accuracy is greater than 30, reload the page after 10 seconds
-                setTimeout(function() {
-                                    document.getElementById('getloc').click();
-                                }, 10000); // 10,000 ms = 10 seconds
+            if(accuracy<50){
+            post_request();
+            return dist;
+            }
+            else{
+            console.log("not accurate enough");
+            setTimeout(function() {
+                                document.getElementById('requestManualLogin').click();
+                            }, 10000);
                 return 0;
             }
 
@@ -134,31 +131,11 @@ function onSuccess(position) {
         document.getElementById('hrswork').textContent = employee.hrs_worked;
     }
 
-    async function pushdata(Id, dist, time, status, latitude, longitude) {
-        try {
-            const response = await fetch(`https://${ip_ad}/LogInOut`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ Id, dist, time, status, latitude, longitude }),
-            });
 
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.status}`);
-            }
-
-            const result = await response.json();
-            console.log('Data successfully pushed:', result);
-
-        } catch (error) {
-            console.error('Error pushing data to server:', error);
-            throw error;
-        }
-    }
 
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
+
 
     fetchLocations();
 }
@@ -167,6 +144,46 @@ function onError(error) {
     var errorMessage = `Error (${error.code}): ${error.message}`;
     document.getElementById('location').innerHTML = errorMessage;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('logoutButton').addEventListener('click', async function() {
+        try {
+            window.location.href = 'logout.html';
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred during logout. Please try again.');
+        }
+    });
+});
+function requests(){
+    getLocation();
+
+}
+
+async function post_request() {
+        try {
+
+            const response = await fetch(`https://${ip_ad}/requests`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ Id, dist, time,  latitude, longitude }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Data successfully pushed:', result);
+            alert("request sent successfully!!!");
+
+        } catch (error) {
+            console.error('Error pushing data to server:', error);
+            throw error;
+        }
+    }
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('logoutButton').addEventListener('click', async function() {

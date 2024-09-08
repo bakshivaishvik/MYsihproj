@@ -1,10 +1,10 @@
 sessionStorage.setItem('ip_ad', '192.168.0.110:5000');
-cordova.plugins.backgroundMode.enable();
+//cordova.plugins.backgroundMode.enable();
 
     async function checkValid() {
         const ip_ad = sessionStorage.getItem('ip_ad');
 
-        //const ip_ad = "192.168.0.110";
+        //const ip_ad = "65.2.40.201";
         //const ip_ad="192.168.137.213";
         console.log('checkValid function called');
         const username = document.getElementById('loginId').value;
@@ -58,7 +58,7 @@ cordova.plugins.backgroundMode.enable();
                         console.log('Employee data:', data);
                         const Id = data; // Ensure 'data' contains 'id'
                         //window.location.href = `js/finger.html?userId=${encodeURIComponent(Id)}&status=${encodeURIComponent(response.status)}`;
-                        window.location.href = `js/getlocation.html?userId=${encodeURIComponent(Id)}`;
+                        window.location.href = `js/userlogin.html?userId=${encodeURIComponent(Id)}`;
                     })
                     .catch(error => {
                         console.error('Error fetching employee data:', error);
