@@ -16,7 +16,7 @@ sessionStorage.setItem('ip_ad', '192.168.0.110:5000');
         }
 
         try {
-            const response = await fetch(`https://${ip_ad}/login`, {
+            const response = await fetch(`https://${ip_ad}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

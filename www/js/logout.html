@@ -7,7 +7,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background: linear-gradient(135deg, #FFC3A0, #FF677D, #D4A5A5, #FFEBE8);
+            background-size: 600% 600%;
+            animation: gradientShift 15s ease infinite;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -16,10 +18,43 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            position: relative;
+        }
+
+        .moving-symbols {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .moving-symbols .symbol {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.7;
+            animation: moveSymbols 12s linear infinite;
+        }
+
+        @keyframes moveSymbols {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
         }
 
         h1 {
-            color: #333;
+            color: #fff;
             font-size: 2.5rem;
             margin-bottom: 20px;
             opacity: 0;
@@ -28,7 +63,7 @@
         }
 
         p {
-            color: #666;
+            color: #f0f0f0;
             font-size: 1.2rem;
             margin-bottom: 30px;
             opacity: 0;
@@ -41,7 +76,7 @@
             padding: 10px 20px;
             font-size: 1rem;
             color: #fff;
-            background-color: #007BFF;
+            background-color: #28a745;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -53,7 +88,7 @@
         }
 
         #logoutButton:hover {
-            background-color: #0056b3;
+            background-color: #218838;
         }
 
         @keyframes fadeInDown {
@@ -80,11 +115,21 @@
     </style>
 </head>
 <body>
+<div class="moving-symbols">
+    <span class="symbol" style="top: 10%; left: 10%; font-size: 32px;"><i class="fas fa-sign-out-alt"></i></span>
+    <span class="symbol" style="top: 30%; left: 30%; font-size: 28px;"><i class="fas fa-door-open"></i></span>
+    <span class="symbol" style="top: 50%; left: 50%; font-size: 24px;"><i class="fas fa-arrow-right"></i></span>
+    <span class="symbol" style="top: 70%; left: 20%; font-size: 26px;"><i class="fas fa-sign-in-alt"></i></span>
+    <span class="symbol" style="top: 80%; left: 60%; font-size: 30px;"><i class="fas fa-power-off"></i></span>
+    <span class="symbol" style="top: 40%; left: 70%; font-size: 22px;"><i class="fas fa-user-times"></i></span>
+    <span class="symbol" style="top: 60%; left: 40%; font-size: 26px;"><i class="fas fa-user-lock"></i></span>
+</div>
+
 <h1>LOGOUT</h1>
 <p>You have successfully logged out.</p>
-
 <button id="logoutButton">➡ Go to Login Page</button>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script src="logout.js"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geo-Attendance/Admin-Login</title>
     <style>
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -13,16 +14,92 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #e9ecef;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
             color: #212529;
+            overflow: hidden;
+            position: relative;
         }
+
+
+        #geo-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .geo-symbol {
+            position: absolute;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/684/684908.png');
+            background-size: cover;
+            width: 30px;
+            height: 30px;
+            opacity: 0.5;
+            animation: move 20s linear infinite;
+        }
+
+
+        @keyframes move {
+            0% {
+                transform: translateY(0) translateX(0);
+            }
+            100% {
+                transform: translateY(100vh) translateX(100vw);
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            .geo-symbol {
+                width: 25px;
+                height: 25px;
+            }
+        }
+
+        .geo-symbol:nth-child(1) { top: 10%; left: 5%; animation-duration: 25s; }
+        .geo-symbol:nth-child(2) { top: 15%; left: 20%; animation-duration: 30s; animation-delay: 2s; }
+        .geo-symbol:nth-child(3) { top: 20%; left: 35%; animation-duration: 28s; animation-delay: 4s; }
+        .geo-symbol:nth-child(4) { top: 25%; left: 50%; animation-duration: 24s; animation-delay: 6s; }
+        .geo-symbol:nth-child(5) { top: 30%; left: 65%; animation-duration: 20s; animation-delay: 8s; }
+        .geo-symbol:nth-child(6) { top: 35%; left: 80%; animation-duration: 22s; animation-delay: 10s; }
+        .geo-symbol:nth-child(7) { top: 40%; left: 10%; animation-duration: 26s; animation-delay: 3s; }
+        .geo-symbol:nth-child(8) { top: 45%; left: 25%; animation-duration: 29s; animation-delay: 7s; }
+        .geo-symbol:nth-child(9) { top: 50%; left: 40%; animation-duration: 30s; animation-delay: 9s; }
+        .geo-symbol:nth-child(10) { top: 55%; left: 55%; animation-duration: 27s; animation-delay: 5s; }
+        .geo-symbol:nth-child(11) { top: 60%; left: 70%; animation-duration: 22s; animation-delay: 4s; }
+        .geo-symbol:nth-child(12) { top: 65%; left: 85%; animation-duration: 25s; animation-delay: 6s; }
+        .geo-symbol:nth-child(13) { top: 70%; left: 15%; animation-duration: 28s; animation-delay: 3s; }
+        .geo-symbol:nth-child(14) { top: 75%; left: 30%; animation-duration: 20s; animation-delay: 8s; }
+        .geo-symbol:nth-child(15) { top: 80%; left: 45%; animation-duration: 23s; animation-delay: 10s; }
+        .geo-symbol:nth-child(16) { top: 85%; left: 60%; animation-duration: 25s; animation-delay: 5s; }
+        .geo-symbol:nth-child(17) { top: 90%; left: 75%; animation-duration: 27s; animation-delay: 7s; }
+        .geo-symbol:nth-child(18) { top: 95%; left: 90%; animation-duration: 30s; animation-delay: 4s; }
+        .geo-symbol:nth-child(19) { top: 10%; left: 15%; animation-duration: 22s; animation-delay: 6s; }
+        .geo-symbol:nth-child(20) { top: 25%; left: 30%; animation-duration: 28s; animation-delay: 3s; }
+        .geo-symbol:nth-child(21) { top: 40%; left: 45%; animation-duration: 24s; animation-delay: 9s; }
+        .geo-symbol:nth-child(22) { top: 55%; left: 60%; animation-duration: 26s; animation-delay: 7s; }
+        .geo-symbol:nth-child(23) { top: 70%; left: 75%; animation-duration: 30s; animation-delay: 8s; }
+        .geo-symbol:nth-child(24) { top: 85%; left: 90%; animation-duration: 25s; animation-delay: 4s; }
+        .geo-symbol:nth-child(25) { top: 15%; left: 25%; animation-duration: 29s; animation-delay: 5s; }
+        .geo-symbol:nth-child(26) { top: 30%; left: 40%; animation-duration: 21s; animation-delay: 6s; }
+        .geo-symbol:nth-child(27) { top: 45%; left: 55%; animation-duration: 27s; animation-delay: 7s; }
+        .geo-symbol:nth-child(28) { top: 60%; left: 70%; animation-duration: 22s; animation-delay: 9s; }
+        .geo-symbol:nth-child(29) { top: 75%; left: 85%; animation-duration: 30s; animation-delay: 4s; }
+
 
         .container {
             text-align: center;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1;
+            width: 90%;
+            max-width: 400px;
         }
 
         .container h1 {
@@ -30,6 +107,7 @@
             font-size: 28px;
             color: #343a40;
         }
+
 
         button {
             padding: 12px 24px;
@@ -43,6 +121,8 @@
             color: #ffffff;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 250px;
         }
 
         button:hover {
@@ -54,6 +134,7 @@
             background-color: #1e7e34;
             transform: translateY(0);
         }
+
 
         .logout-container {
             margin-top: 40px;
@@ -80,6 +161,39 @@
 </head>
 <body>
 
+
+<div id="geo-background">
+
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+</div>
 <div class="container">
     <h1>Employee Management</h1>
     <button id="view-employees-btn">View Employees</button>

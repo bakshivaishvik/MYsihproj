@@ -216,7 +216,7 @@
 
     <title>user page</title>
 </head>
-<body >
+<body>
 <div class="container">
     <h1>Employee Bio-Data</h1>
     <div class="bio-data">
@@ -240,19 +240,27 @@
             <label for="hrswork">Hours worked</label>
             <span id="hrswork"></span>
         </div>
+        <div class="upload-container">
+            <input type="file" id="photoInput" accept="image/*" capture="environment">
+
+        </div>
 
     </div>
 
-
-    <button id="requestManualLogin" onclick="requests();"><i class="fas fa-envelope"></i> Request Manual Login</button>
+    <button id="requestManualLogin" onclick="getLocation();"><i class="fas fa-envelope"></i> Request Manual Login</button>
 </div>
 
 <!-- Logout section -->
 <div class="logout-container">
-    <h1 >Logout</h1>
-    <button id="logoutButton">
-        Logout
-    </button>
+    <h1>Logout</h1>
+    <button id="logoutButton">Logout</button>
+</div>
+
+
+<!-- Logout section -->
+<div class="logout-container">
+    <h1>Logout</h1>
+    <button id="logoutButton">Logout</button>
 </div>
 
 <script src="user_manual_login.js"></script>

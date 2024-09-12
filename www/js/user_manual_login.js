@@ -11,14 +11,12 @@ function onDeviceReady() {
     // Listen for background mode activation
     cordova.plugins.backgroundMode.onactivate = function() {
         console.log("Background mode activated");
-        // Execute your entire code here to ensure it runs in the background
         runAppInBackground();
     };
 
     // Optional: Handle background mode deactivation if needed
     cordova.plugins.backgroundMode.ondeactivate = function() {
         console.log("Background mode deactivated");
-        // Any code that should only run when the app is in the foreground can go here
     };
 
     // Run your app's code initially (in case the app is already in the foreground)
@@ -29,7 +27,8 @@ function runAppInBackground() {
     getLocation();
     // Any other functions or code you want to execute in the background
 }
-var latitude,longitude,accuracy,timestamp,dist,time,Id;
+
+var latitude, longitude, accuracy, timestamp, dist, time, Id;
 
 function getLocation() {
     var options = {
@@ -46,7 +45,8 @@ function onSuccess(position) {
     longitude = position.coords.longitude;
     accuracy = position.coords.accuracy;
     timestamp = position.timestamp;
-    time=timestamp;
+    time = timestamp;
+
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = deg2rad(lat2 - lat1);
@@ -65,8 +65,8 @@ function onSuccess(position) {
     }
 
     async function fetchLocations() {
-    const id = decodeURIComponent(urlParams.get('userId'));
-    Id=id;
+        const id = decodeURIComponent(urlParams.get('userId'));
+        Id = id;
         try {
             const response = await fetch(`https://${ip_ad}/employees/id/${id}`, {
                 method: 'GET',
@@ -104,21 +104,17 @@ function onSuccess(position) {
             console.log(accuracy);
             let status = dist <= 250 ? 'True' : 'False';
             console.log(dist);
-            if(accuracy<50){
-            post_request();
-            return dist;
+            if (accuracy < 50) {
+                await handleRequestAndPhoto();
+            } else {
+                console.log("Not accurate enough");
+                setTimeout(function() {
+                    document.getElementById('requestManualLogin').click();
+                }, 5000);
             }
-            else{
-            console.log("not accurate enough");
-            setTimeout(function() {
-                                document.getElementById('requestManualLogin').click();
-                            }, 10000);
-                return 0;
-            }
-
         } catch (error) {
             console.error('Error occurred:', error);
-            alert(`An error occurred: ${error.message}`);
+            alert('An error occurred: photos do not match');
         }
     }
 
@@ -131,13 +127,11 @@ function onSuccess(position) {
         document.getElementById('hrswork').textContent = employee.hrs_worked;
     }
 
-
-
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
 
-
     fetchLocations();
+
 }
 
 function onError(error) {
@@ -155,43 +149,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-function requests(){
-    getLocation();
 
+async function handleRequestAndPhoto() {
+    try {
+        const formData = new FormData();
+        formData.append('Id', Id || ''); // Ensure Id is not undefined
+        formData.append('dist', dist || ''); // Ensure dist is not undefined
+        formData.append('time', time || ''); // Ensure time is not undefined
+        formData.append('longitude', longitude || ''); // Ensure longitude is not undefined
+        formData.append('latitude', latitude || ''); // Ensure latitude is not undefined
+        formData.append('stat', 'Pending');  // Adjust this as necessary
+
+        const fileInput = document.getElementById('photoInput');
+        const file = fileInput.files[0];
+        if (file) {
+            formData.append('photo', file);
+        }
+
+        const response = await fetch(`https://${ip_ad}/submit_request`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Data successfully pushed:', result);
+        alert("Request and photo sent successfully!");
+
+    } catch (error) {
+        console.error('Error pushing data to server:', error);
+        alert('Error sending request and photo.');
+    }
 }
 
-async function post_request() {
-        try {
 
-            const response = await fetch(`https://${ip_ad}/requests`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ Id, dist, time,  latitude, longitude }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.status}`);
-            }
-
-            const result = await response.json();
-            console.log('Data successfully pushed:', result);
-            alert("request sent successfully!!!");
-
-        } catch (error) {
-            console.error('Error pushing data to server:', error);
-            throw error;
-        }
-    }
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('logoutButton').addEventListener('click', async function() {
-        try {
-            window.location.href = 'logout.html';
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred during logout. Please try again.');
-        }
-    });
-});

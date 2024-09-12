@@ -41,37 +41,58 @@ async function fetchEmployees() {
             }
         }
 
-        async function addEmployee() {
-            const name = document.getElementById('name').value;
-            const position = document.getElementById('position').value;
-            const Id = document.getElementById('Id').value;
-            const loc = document.getElementById('loc').value;
-            const uId = document.getElementById('uid').value;
-            const pass = document.getElementById('pass').value;
-            if (!name || !position) {
-                alert('Please enter both name and position');
-                return;
-            }
+       async function addEmployee() {
+           const name = document.getElementById('name').value;
+           const position = document.getElementById('position').value;
+           const Id = document.getElementById('Id').value;
+           const loc = document.getElementById('loc').value;
+           const uId = document.getElementById('uid').value;
+           const pass = document.getElementById('pass').value;
+           const fileInput = document.getElementById('photoInput');
+           const file = fileInput.files[0];
 
-            try {
-                const response = await fetch(`https://${ip_ad}/employees`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ Id,name, position ,uId,pass,loc})
-                });
+           if (!name || !position || !Id || !loc || !uId || !pass) {
+               alert('Please enter all required employee details');
+               return;
+           }
 
-                if (response.ok) {
-                    alert('Employee added successfully');
-                    fetchEmployees(); // Refresh the list
-                } else {
-                    alert('Error adding employee');
-                }
-            } catch (error) {
-                console.error('Error adding employee:', error);
-            }
-        }
+           // Create a FormData object to hold the data and file
+           const formData = new FormData();
+           formData.append('Id', Id);
+           formData.append('name', name);
+           formData.append('position', position);
+           formData.append('loc', loc);
+           formData.append('uId', uId);
+           formData.append('pass', pass);
+           if (file) {
+               formData.append('photo', file);
+           }
+
+           try {
+               // Send the form data in a single POST request
+               const response = await fetch(`https://${ip_ad}/employees`, {
+                   method: 'POST',
+                   body: formData
+               });
+
+               const data = await response.json();
+
+               if (response.ok) {
+                   alert('Employee added and photo uploaded successfully!');
+                   fetchEmployees(); // Refresh the list
+               } else {
+                   alert('Error: ' + (data.error || 'Failed to add employee and upload photo.'));
+               }
+
+           } catch (error) {
+               console.error('Error:', error);
+               alert('Error adding employee or uploading photo.');
+           }
+       }
+
+       // Attach the function to a button click
+       document.getElementById('uploadPhotoButton').addEventListener('click', addEmployeeAndUploadPhoto);
+
 
         async function deleteEmployee(employeeId) {
             try {
@@ -116,10 +137,40 @@ async function fetchEmployees() {
                         alert(`Error: ${error.message}`);
                     }
                 }
+/*
+                document.getElementById('uploadPhotoButton').addEventListener('click', function() {
+                    var fileInput = document.getElementById('photoInput');
+                    var file = fileInput.files[0];
+                    const employeeId=document.getElementById('id_user').value;
+
+                    if (file && employeeId) {
+                        var formData = new FormData();
+                        formData.append('photo', file);
+
+                        fetch(`https://${ip_ad}/upload_photo/${employeeId}`, {
+                            method: 'POST',
+                            body: formData,
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message) {
+                                alert('Photo uploaded successfully!');
+                            } else if (data.error) {
+                                alert('Failed to upload photo: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error uploading photo.');
+                        });
+                    } else {
+                        alert('Please select a photo to upload and ensure employee ID is present.');
+                    }
+                });
 
 
          // Fetch employees when the page loads
-
+*/
         window.onload = fetchEmployees;
 
 

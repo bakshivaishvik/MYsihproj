@@ -8,29 +8,15 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e9ecef;
             margin: 0;
-            padding: 20px;
-            animation: fadeIn 1s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-            animation: slideInUp 1s ease-in-out;
+            padding: 0;
+            background: linear-gradient(135deg, rgba(100, 150, 240, 0.8), rgba(250, 200, 100, 0.8));
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         @keyframes slideInUp {
@@ -44,6 +30,19 @@
             }
         }
 
+        .container {
+            max-width: 500px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 1s ease-in-out;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 500px;
+        }
+
         h1 {
             text-align: center;
             color: #333;
@@ -55,7 +54,7 @@
         }
 
         h1::before {
-            content: "\f3c5"; /* Map Marker icon from FontAwesome */
+            content: "\f3c5";
             font-family: 'FontAwesome';
             font-size: 1.5rem;
             color: #28a745;
@@ -102,9 +101,9 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            align-self: center; /* Center the button */
-            width: 100%; /* Make button full width */
-            max-width: 300px; /* Limit max width */
+            align-self: center;
+            width: 100%;
+            max-width: 300px;
         }
 
         button i {
@@ -140,85 +139,102 @@
             transform: translateY(0);
         }
 
-        #map {
-            height: 300px;
-            margin-top: 10px;
-            border-radius: 8px;
-        }
-
-        .logout-container {
-            margin-top: 40px;
-            text-align: center; /* Center the logout container */
-        }
-
-        .logout-container h1 {
-            margin-bottom: 20px;
-            font-size: 22px;
-            color: #dc3545;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logout-container h1::before {
-            content: "\f2f5"; /* Sign Out icon from FontAwesome */
-            font-family: 'FontAwesome';
-            font-size: 1.5rem;
-            color: #dc3545;
-            margin-right: 10px;
-        }
-
-        .logout-container button {
-            background-color: #dc3545;
-            width: 100%; /* Make button full width */
-            max-width: 300px; /* Limit max width */
-            display: block; /* Center the button */
-            margin: 0 auto;
-        }
-
-        .logout-container button:hover {
-            background-color: #c82333;
-        }
-
-        .logout-container button:active {
-            background-color: #bd2130;
-        }
-
-        .container ul {
-            padding-left: 20px;
-            list-style-type: none;
-        }
-
-        .container ul li {
-            padding: 8px 0;
-            position: relative;
-            animation: fadeInUp 1s ease-in-out;
-        }
-
-        .container ul li::before {
-            content: "\f3c5"; /* Map Marker icon from FontAwesome */
-            font-family: 'FontAwesome';
-            font-size: 1rem;
-            color: #28a745;
+        #geo-background {
             position: absolute;
-            left: -20px;
-            top: 5px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
         }
 
-        @keyframes fadeInUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        .geo-symbol {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: url('https://img.icons8.com/material-outlined/24/000000/marker.png') no-repeat center center;
+            background-size: contain;
+            opacity: 0.8;
         }
+
+
+        @keyframes move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(calc(100vw - 40px), calc(100vh - 40px)); }
+        }
+
+        .geo-symbol {
+            animation: move linear infinite;
+        }
+
+
+        .geo-symbol:nth-child(1) { top: 10%; left: 10%; animation-duration: 20s; }
+        .geo-symbol:nth-child(2) { top: 20%; left: 20%; animation-duration: 25s; }
+        .geo-symbol:nth-child(3) { top: 30%; left: 30%; animation-duration: 30s; }
+        .geo-symbol:nth-child(4) { top: 40%; left: 40%; animation-duration: 22s; }
+        .geo-symbol:nth-child(5) { top: 50%; left: 50%; animation-duration: 28s; }
+        .geo-symbol:nth-child(6) { top: 60%; left: 60%; animation-duration: 25s; }
+        .geo-symbol:nth-child(7) { top: 70%; left: 70%; animation-duration: 20s; }
+        .geo-symbol:nth-child(8) { top: 80%; left: 80%; animation-duration: 30s; }
+        .geo-symbol:nth-child(9) { top: 15%; left: 25%; animation-duration: 27s; }
+        .geo-symbol:nth-child(10) { top: 25%; left: 35%; animation-duration: 24s; }
+        .geo-symbol:nth-child(11) { top: 35%; left: 45%; animation-duration: 26s; }
+        .geo-symbol:nth-child(12) { top: 45%; left: 55%; animation-duration: 21s; }
+        .geo-symbol:nth-child(13) { top: 55%; left: 65%; animation-duration: 29s; }
+        .geo-symbol:nth-child(14) { top: 65%; left: 75%; animation-duration: 23s; }
+        .geo-symbol:nth-child(15) { top: 75%; left: 85%; animation-duration: 27s; }
+        .geo-symbol:nth-child(16) { top: 85%; left: 15%; animation-duration: 22s; }
+        .geo-symbol:nth-child(17) { top: 5%; left: 40%; animation-duration: 26s; }
+        .geo-symbol:nth-child(18) { top: 15%; left: 55%; animation-duration: 30s; }
+        .geo-symbol:nth-child(19) { top: 25%; left: 70%; animation-duration: 24s; }
+        .geo-symbol:nth-child(20) { top: 35%; left: 85%; animation-duration: 28s; }
+        .geo-symbol:nth-child(21) { top: 45%; left: 10%; animation-duration: 26s; }
+        .geo-symbol:nth-child(22) { top: 55%; left: 25%; animation-duration: 22s; }
+        .geo-symbol:nth-child(23) { top: 65%; left: 40%; animation-duration: 30s; }
+        .geo-symbol:nth-child(24) { top: 75%; left: 55%; animation-duration: 27s; }
+        .geo-symbol:nth-child(25) { top: 85%; left: 70%; animation-duration: 20s; }
+        .geo-symbol:nth-child(26) { top: 10%; left: 85%; animation-duration: 22s; }
+        .geo-symbol:nth-child(27) { top: 20%; left: 15%; animation-duration: 29s; }
+        .geo-symbol:nth-child(28) { top: 30%; left: 30%; animation-duration: 25s; }
+        .geo-symbol:nth-child(29) { top: 40%; left: 45%; animation-duration: 30s; }
     </style>
 </head>
 <body>
+<div id="geo-background">
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+    <div class="geo-symbol"></div>
+</div>
+
 <div class="container">
     <h1>Employee Bio-Data</h1>
     <div class="bio-data">

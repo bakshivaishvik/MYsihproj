@@ -5,11 +5,149 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Management</title>
 
-    <link rel="stylesheet" href="emp.css">
-     <link rel="stylesheet" href="addloc.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #4CAF50, #FF5722);
+            overflow: auto;
+            font-family: Arial, sans-serif;
+        }
+
+
+        .moving-symbols {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .moving-symbols .symbol {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.5;
+            animation: moveSymbols 15s linear infinite;
+        }
+
+        @keyframes moveSymbols {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-section, .list-section, .logout-container {
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="number"], input[type="password"] {
+            width: calc(100% - 40px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .logout-container h1::before {
+            content: "\f2f5";
+            font-family: 'FontAwesome';
+            font-size: 1.5rem;
+            color: #dc3545;
+            margin-right: 10px;
+        }
+
+        .logout-container button {
+            background-color: #dc3545;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .logout-container button:hover {
+            background-color: #c82333;
+        }
+
+        .logout-container button:active {
+            background-color: #bd2130;
+        }
+
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 10px;
+            }
+
+            input[type="text"], input[type="number"], input[type="password"] {
+                width: 100%;
+                padding: 8px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+
+    </style>
 </head>
 <body>
+<div class="moving-symbols">
+    <span class="symbol" style="top: 10%; left: 10%;"><i class="fas fa-user"></i></span>
+    <span class="symbol" style="top: 25%; left: 30%;"><i class="fas fa-lock"></i></span>
+    <span class="symbol" style="top: 40%; left: 50%;"><i class="fas fa-id-badge"></i></span>
+    <!-- Add more symbols as needed -->
+</div>
+
+
 <h1><i class="fas fa-users"></i> Employee Management</h1>
 <div class="container">
 
@@ -47,6 +185,9 @@
                 <input type="text" id="uid" required>
             </div>
 
+            <div class="upload-container">
+                <input type="file" id="photoInput" accept="image/*">
+            </div>
 
             <div class="input-container">
                 <label for="pass">Password</label>
@@ -61,7 +202,7 @@
             <ul id="employeeList"></ul>
         </div>
         <div class="container">
-            <label for="editlocationId">Enter employee id and password to update:</label>
+            <label >Enter employee id and password to update:</label>
             <input type="number" id="id_user" required>
             <input type="text" id="loca_user" required>
 

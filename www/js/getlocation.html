@@ -1,23 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e9ecef;
+            background: linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%);
             margin: 0;
             padding: 20px;
             animation: fadeIn 1s ease-in-out;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .moving-symbols {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .moving-symbols i {
+            position: absolute;
+            font-family: 'FontAwesome';
+            font-size: 2rem;
+            color: rgba(0, 0, 0, 0.3);
+            animation: moveDown 30s linear infinite;
+        }
+
+        @keyframes moveDown {
             from {
-                opacity: 0;
+                transform: translateY(-10vh);
             }
             to {
-                opacity: 1;
+                transform: translateY(110vh);
             }
         }
+
+
+        .symbol1 { left: 10%; animation-duration: 40s; }
+        .symbol2 { left: 22%; animation-duration: 35s; }
+        .symbol3 { left: 33%; animation-duration: 50s; }
+        .symbol4 { left: 47%; animation-duration: 45s; }
+        .symbol5 { left: 53%; animation-duration: 60s; }
+        .symbol6 { left: 61%; animation-duration: 38s; }
+        .symbol7 { left: 73%; animation-duration: 42s; }
+        .symbol8 { left: 81%; animation-duration: 55s; }
+        .symbol9 { left: 92%; animation-duration: 48s; }
+        .symbol10 { left: 15%; animation-duration: 43s; }
+        .symbol11 { left: 37%; animation-duration: 51s; }
+        .symbol12 { left: 65%; animation-duration: 37s; }
+        .symbol13 { left: 79%; animation-duration: 53s; }
+        .symbol14 { left: 89%; animation-duration: 58s; }
 
         .container {
             max-width: 500px;
@@ -30,14 +78,8 @@
         }
 
         @keyframes slideInUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         h1 {
@@ -51,17 +93,11 @@
         }
 
         h1::before {
-            content: "\f3c5"; /* Map Marker icon from FontAwesome */
+            content: "\f3c5";
             font-family: 'FontAwesome';
             font-size: 1.5rem;
             color: #28a745;
             margin-right: 10px;
-        }
-
-        .bio-data {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
         }
 
         .bio-data .item {
@@ -98,9 +134,8 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            align-self: center; /* Center the button */
-            width: 100%; /* Make button full width */
-            max-width: 300px; /* Limit max width */
+            width: 100%;
+            max-width: 300px;
         }
 
         button i {
@@ -131,11 +166,6 @@
             opacity: 0;
         }
 
-        button:active {
-            background-color: #1e7e34;
-            transform: translateY(0);
-        }
-
         #map {
             height: 300px;
             margin-top: 10px;
@@ -143,22 +173,12 @@
         }
 
         .logout-container {
-            margin-top: 40px;
-            text-align: center; /* Center the logout container */
-        }
-
-        .logout-container h1 {
+            text-align: center;
             margin-bottom: 20px;
-            font-size: 22px;
-            color: #dc3545;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .logout-container h1::before {
-            content: "\f2f5"; /* Sign Out icon from FontAwesome */
+            content: "\f2f5";
             font-family: 'FontAwesome';
             font-size: 1.5rem;
             color: #dc3545;
@@ -167,9 +187,9 @@
 
         .logout-container button {
             background-color: #dc3545;
-            width: 100%; /* Make button full width */
-            max-width: 300px; /* Limit max width */
-            display: block; /* Center the button */
+            width: 100%;
+            max-width: 300px;
+            display: block;
             margin: 0 auto;
         }
 
@@ -181,42 +201,39 @@
             background-color: #bd2130;
         }
 
-        .container ul {
-            padding-left: 20px;
-            list-style-type: none;
-        }
 
-        .container ul li {
-            padding: 8px 0;
-            position: relative;
-            animation: fadeInUp 1s ease-in-out;
-        }
-
-        .container ul li::before {
-            content: "\f3c5"; /* Map Marker icon from FontAwesome */
-            font-family: 'FontAwesome';
-            font-size: 1rem;
-            color: #28a745;
-            position: absolute;
-            left: -20px;
-            top: 5px;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
             }
-            to {
-                transform: translateY(0);
-                opacity: 1;
+
+            button {
+                max-width: 100%;
             }
         }
     </style>
 
-    <title>user page</title>
+    <title>User Page</title>
 </head>
-<body >
+<body>
+<div class="moving-symbols">
+    <i class="fas fa-map-marker-alt symbol1"></i>
+    <i class="fas fa-map-marker-alt symbol2"></i>
+    <i class="fas fa-map-marker-alt symbol3"></i>
+    <i class="fas fa-map-marker-alt symbol4"></i>
+    <i class="fas fa-map-marker-alt symbol5"></i>
+    <i class="fas fa-map-marker-alt symbol6"></i>
+    <i class="fas fa-map-marker-alt symbol7"></i>
+    <i class="fas fa-map-marker-alt symbol8"></i>
+    <i class="fas fa-map-marker-alt symbol9"></i>
+    <i class="fas fa-map-marker-alt symbol10"></i>
+    <i class="fas fa-map-marker-alt symbol11"></i>
+    <i class="fas fa-map-marker-alt symbol12"></i>
+    <i class="fas fa-map-marker-alt symbol13"></i>
+    <i class="fas fa-map-marker-alt symbol14"></i>
+</div>
+
+
 <div class="container">
     <h1>Employee Bio-Data</h1>
     <div class="bio-data">

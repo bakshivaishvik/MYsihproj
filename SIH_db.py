@@ -5,6 +5,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime,timedelta
 import logging
+import cv2
+import numpy as np
+import io
+from flask import send_file
+from deepface import DeepFace
+from PIL import Image
 app = Flask(__name__)
 CORS(app,resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
@@ -41,6 +47,7 @@ class Employee(db.Model):
     username = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(20), nullable=False)
     loc_name = db.Column(db.String(20),nullable=False)
+    photo = db.Column(db.LargeBinary, nullable=True)
     hrs_worked = db.Column(db.FLOAT())
     def __repr__(self):
         return f'<Employee {self.name}>'
@@ -76,6 +83,7 @@ class requests(db.Model):
     lati = db.Column(db.DOUBLE, nullable=False)
     status = db.Column(db.BOOLEAN(),default=False)
     stat = db.Column(db.String(20),default=False)
+    photo = db.Column(db.LargeBinary, nullable=True)
 
 with app.app_context():
     
@@ -145,7 +153,7 @@ def calculate_working_hours(employee_id):
     
     return time   
 
-@app.route('/login', methods=['POST'])
+@app.route('/', methods=['POST'])
 def login():
     #new_employee = Employee(id=1,name='abhinith', position='admin', username='admin', password='admin123')
     #db.session.add(new_employee)
@@ -166,21 +174,6 @@ def login():
         
         return jsonify({'message': 'login unsuccessful'}), 306
     
-@app.route('/login', methods=['GET'])
-def get_login():
-    
-    
-    data = request.get_json()
-    username=data['username']
-    password=data['password']
-    user = Employee.query.filter_by(username=username).first()
-    #print(username,password,user.password)
-    
-    if user and check_password_hash(user.password, password):
-        return jsonify({'message': 'login successful'}), 200 if username == 'admin' else 202
-    else:
-        
-        return jsonify({'message': 'login unsuccessful'}), 306
 
 @app.route('/logout')
 def logout():
@@ -463,18 +456,65 @@ def get_employees():
 
 @app.route('/employees', methods=['POST'])
 def add_employee():
-    data = request.get_json()
-    new_employee = Employee(id=data['Id'],name=data['name'], position=data['position'],loc_name=data['loc'], username=data['uId'], password=generate_password_hash(data['pass']),hrs_worked='0.0')
-    db.session.add(new_employee)
-    db.session.commit()
-    db.session.close()
-    new_employe = LogInOut(id=data['Id'],dist=0, time=datetime.now(),status=True,longi=0.0,lati=0.0)#to be changed
-    #print(type(time))
+    # Ensure content type is multipart/form-data
+    if 'application/json' in request.content_type:
+        return jsonify({'error': 'Expected multipart/form-data'}), 400
 
-    db.session.add(new_employe)
-    db.session.commit()
-    db.session.close()
-    return jsonify({'message': 'Employee added successfully'}), 201
+    # Retrieve JSON data from the form
+    Id = request.form.get('Id')
+    name = request.form.get('name')
+    position = request.form.get('position')
+    loc = request.form.get('loc')
+    uId = request.form.get('uId')
+    pass_ = request.form.get('pass')  # Avoid using 'pass' as it's a reserved keyword
+
+    # Retrieve the photo file
+    photo_file = request.files.get('photo')
+    if photo_file:
+        photo = photo_file.read()
+    else:
+        return jsonify({'error': 'No photo uploaded.'}), 400
+
+    # Check for missing fields
+    if not all([Id, name, position, loc, uId, pass_]):
+        return jsonify({'error': 'Missing required employee details.'}), 400
+
+    try:
+        # Add employee to the database
+        new_employee = Employee(
+            id=Id,
+            name=name,
+            position=position,
+            loc_name=loc,
+            username=uId,
+            password=generate_password_hash(pass_),
+            hrs_worked='0.0',
+            photo=photo
+        )
+        db.session.add(new_employee)
+        db.session.commit()
+
+        # Add a login record
+        new_login = LogInOut(
+            id=Id,
+            dist=0,
+            time=datetime.now(),
+            status=True,
+            longi=0.0,
+            lati=0.0
+        )
+        db.session.add(new_login)
+        db.session.commit()
+
+        return jsonify({'message': 'Employee added successfully'}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error: {e}")
+        return jsonify({'error': 'An error occurred while adding the employee.'}), 500
+
+    finally:
+        db.session.close()
 
 @app.route('/employees/<int:employee_id>', methods=['DELETE'])
 def delete_employee(employee_id):
@@ -514,21 +554,65 @@ def get_requests():
     requests_list = [model_to_dict(req) for req in all_requests]
     return jsonify(requests_list), 200
 
-@app.route('/requests', methods=['POST'])
-def post_requests():
-    data = request.get_json()
-    
-    #print()
-    
-    #print("dist is"+data['dist'])
-    
-    new_employee = requests(id=data['Id'],dist=data['dist'], time=datetime.utcfromtimestamp(data['time']/1000),status=False,longi=data['longitude'],lati=data['latitude'],stat="Pending")#to be changed
-    #print(bool(data['status']))
-    
-    db.session.add(new_employee)
-    db.session.commit()
-    db.session.close()
-    return jsonify({'message': 'updated'}), 201
+@app.route('/submit_request', methods=['POST'])
+def submit_request():
+    try:
+        # Extract data from the form
+        data = request.form
+        
+        # Extract form data with fallbacks
+        request_id = int(data.get('Id'))
+        name = data.get('name', '')
+        dist = float(data.get('dist', 0))
+        time = datetime.utcfromtimestamp(int(data.get('time')) / 1000)
+        longitude = float(data.get('longitude', 0))
+        latitude = float(data.get('latitude', 0))
+        stat = data.get('stat', 'Pending')
+
+        # Handle the uploaded photo
+        photo = request.files.get('photo')
+        if not photo:
+            return jsonify({'error': 'Photo is required'}), 400
+        
+        # Convert the uploaded photo to an image format (PIL) and then to a NumPy array
+        photo_data = Image.open(io.BytesIO(photo.read()))
+        photo_array = np.array(photo_data)
+        
+        # Fetch the employee from the database
+        employee = Employee.query.filter_by(id=request_id).first()
+        if not employee:
+            return jsonify({"error": "Employee not found"}), 404
+        
+        # Convert stored employee photo from binary to a NumPy array
+        stored_photo_data = Image.open(io.BytesIO(employee.photo))
+        stored_photo_array = np.array(stored_photo_data)
+
+        # Verify the photos using DeepFace
+        result = DeepFace.verify(photo_array, stored_photo_array)
+
+        if result["verified"]:
+            # Add a new log entry if verification is successful
+            new_entry = LogInOut(
+                id=request_id,
+                dist=dist,
+                time=time,
+                status=True,
+                longi=longitude,
+                lati=latitude
+            )
+            db.session.add(new_entry)
+            db.session.commit()
+            return jsonify({'message': 'Photos match and logs have been updated'}), 201
+        else:
+            return jsonify({'message': 'Photos do not match'}), 401
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error: {e}")
+        return jsonify({'error': 'Failed to process request'}), 500
+
+    finally:
+        db.session.close()
 
 
 
@@ -561,6 +645,32 @@ def copy_request_to_loginout(sno):
         # Rollback in case of error
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+    
+@app.route('/upload_photo/<int:employee_id>', methods=['POST'])
+def upload_photo(employee_id):
+    employee = Employee.query.filter_by(id=employee_id).first()
+    if not employee:
+        return jsonify({"error": "Employee not found"}), 404
+
+    photo = request.files['photo'].read()
+    employee.photo = photo
+    db.session.commit()
+    return jsonify({"message": "Photo uploaded successfully"}), 200
+
+@app.route('/get_photo/<int:employee_id>', methods=['GET'])
+def get_photo(employee_id):
+    employee = Employee.query.filter_by(id=employee_id).first()
+    if not employee or not employee.photo:
+        return jsonify({"error": "Photo not found"}), 404
+
+    return send_file(
+        io.BytesIO(employee.photo),
+        mimetype='image/jpeg',
+        as_attachment=True,
+        download_name=f"employee_{employee_id}_photo.jpg"
+    )
+
+
 
 if __name__ == '__main__':
 #    logging.basicConfig(level=logging.DEBUG)
