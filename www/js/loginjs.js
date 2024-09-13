@@ -1,4 +1,4 @@
-sessionStorage.setItem('ip_ad', '192.168.0.110:5000');
+sessionStorage.setItem('ip_ad', '192.168.150.122:5000');
 //cordova.plugins.backgroundMode.enable();
 
     async function checkValid() {

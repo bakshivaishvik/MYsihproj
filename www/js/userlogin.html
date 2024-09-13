@@ -12,54 +12,117 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f4f4f4;
+            background: linear-gradient(135deg, #6dd5ed, #f5af19);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            overflow: hidden;
         }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
         .container {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
         }
+
         .button {
             display: inline-block;
-            padding: 10px 20px;
-            margin: 10px;
-            font-size: 16px;
+            padding: 12px 25px;
+            margin: 15px;
+            font-size: 18px;
             color: #fff;
-            background-color: #007bff;
+            background-color: #000000;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             text-decoration: none;
+            transition: background-color 0.3s ease;
         }
+
         .button:hover {
-            background-color: #0056b3;
+            background-color: #218838;
         }
+
+        .button i {
+            margin-right: 8px;
+        }
+
+        .symbols-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .symbol {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.2;
+            animation: moveSymbol 20s linear infinite;
+        }
+
+        @keyframes moveSymbol {
+            from {
+                transform: translateY(-100px) rotate(0deg);
+            }
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .symbol:nth-child(1) { left: 10%; font-size: 40px; animation-duration: 12s; }
+        .symbol:nth-child(2) { left: 30%; font-size: 50px; animation-duration: 18s; }
+        .symbol:nth-child(3) { left: 50%; font-size: 35px; animation-duration: 16s; }
+        .symbol:nth-child(4) { left: 70%; font-size: 45px; animation-duration: 20s; }
+        .symbol:nth-child(5) { left: 90%; font-size: 55px; animation-duration: 22s; }
+        .symbol:nth-child(6) { left: 15%; font-size: 30px; animation-duration: 24s; }
+        .symbol:nth-child(7) { left: 35%; font-size: 60px; animation-duration: 19s; }
+        .symbol:nth-child(8) { left: 55%; font-size: 50px; animation-duration: 21s; }
+        .symbol:nth-child(9) { left: 75%; font-size: 40px; animation-duration: 23s; }
+        .symbol:nth-child(10) { left: 95%; font-size: 50px; animation-duration: 17s; }
+
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Welcome</h1>
-    <p>Please choose an option:</p>
 
-    <button id="geolocation_based_login">geolocation based login</button>
-    <button id="manual_login">manual login</button>
-    <button id="check_logs">check logs</button>
+
+<div>
+    <button id="geolocation_based_login" class="button">geolocation based login</button>
+    <button id="manual_login" class="button">manual login</button>
+    <button id="check_logs" class="button">check logs</button>
 </div>
+
+
+
 <script>
+
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const Id = decodeURIComponent(urlParams.get('userId'));
     document.getElementById('geolocation_based_login').addEventListener('click', function() {
+    console.log("geolog");
         window.location.href = `getlocation.html?userId=${encodeURIComponent(Id)}`;
     });
 
     document.getElementById('manual_login').addEventListener('click', function() {
+    console.log("manlog");
         window.location.href = `user_manual_login.html?userId=${encodeURIComponent(Id)}`;
     });
 
     document.getElementById('check_logs').addEventListener('click', function(){
+    console.log("checklog");
         window.location.href = `logs_user.html?userId=${encodeURIComponent(Id)}`;
     });
 </script>

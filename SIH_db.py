@@ -602,6 +602,19 @@ def submit_request():
             )
             db.session.add(new_entry)
             db.session.commit()
+            new_entry = LogInOut(
+                id=request_id,
+                dist=dist,
+                time=time,
+                status=True,
+                longi=longitude,
+                lati=latitude
+            )
+            
+            # Add the new entry to the session
+            db.session.add(new_entry)
+            # Commit the transaction
+            db.session.commit()
             return jsonify({'message': 'Photos match and logs have been updated'}), 201
         else:
             return jsonify({'message': 'Photos do not match'}), 401
@@ -697,7 +710,7 @@ if __name__ == '__main__':
             db.session.add(new_employee)
             db.session.commit()
             db.session.close()
-    app.run(host = '192.168.0.110',port = 5000,ssl_context=context)
+    app.run(host = '192.168.150.122',port = 5000,ssl_context=context)
     
 #openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
 #192.168.230.112

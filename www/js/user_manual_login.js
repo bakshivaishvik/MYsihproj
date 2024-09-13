@@ -171,8 +171,9 @@ async function handleRequestAndPhoto() {
             body: formData
         });
 
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
+        if (response.status==401) {
+            alert('its not you!!!');
+            return;
         }
 
         const result = await response.json();
@@ -180,8 +181,8 @@ async function handleRequestAndPhoto() {
         alert("Request and photo sent successfully!");
 
     } catch (error) {
-        console.error('Error pushing data to server:', error);
-        alert('Error sending request and photo.');
+        //console.error('its not you!!!', error);
+
     }
 }
 

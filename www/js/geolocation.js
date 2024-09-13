@@ -35,7 +35,7 @@ var latitude, longitude, accuracy, timestamp, dist, time, Id;
 function getLocation() {
     var options = {
         enableHighAccuracy: true,
-        timeout: 2000,
+        timeout: 5000,
         maximumAge: 0
     };
 
@@ -115,7 +115,7 @@ function onSuccess(position) {
                 // If accuracy is greater than 30, reload the page after 10 seconds
                 setTimeout(function() {
                                     document.getElementById('getloc').click();
-                                }, 10000); // 10,000 ms = 10 seconds
+                                }, 3000); // 10,000 ms = 10 seconds
                 return 0;
             }
 
