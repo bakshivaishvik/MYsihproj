@@ -40,7 +40,7 @@
             margin: 15px;
             font-size: 18px;
             color: #fff;
-            background-color: #000000;
+            background-color: #28a745;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -64,6 +64,7 @@
             left: 0;
             overflow: hidden;
             z-index: 1;
+            pointer-events: none;
         }
 
         .symbol {
@@ -97,6 +98,19 @@
 </head>
 <body>
 
+<div class="symbols-container">
+    <div class="symbol"><i class="fas fa-map-marker-alt"></i></div>
+    <div class="symbol"><i class="fas fa-fingerprint"></i></div>
+    <div class="symbol"><i class="fas fa-map-marker-alt"></i></div>
+    <div class="symbol"><i class="fas fa-fingerprint"></i></div>
+    <div class="symbol"><i class="fas fa-map-marker-alt"></i></div>
+    <div class="symbol"><i class="fas fa-fingerprint"></i></div>
+    <div class="symbol"><i class="fas fa-map-marker-alt"></i></div>
+    <div class="symbol"><i class="fas fa-fingerprint"></i></div>
+    <div class="symbol"><i class="fas fa-map-marker-alt"></i></div>
+    <div class="symbol"><i class="fas fa-fingerprint"></i></div>
+</div>
+
 
 <div>
     <button id="geolocation_based_login" class="button">geolocation based login</button>
@@ -105,7 +119,7 @@
 </div>
 
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 <script>
 
     const queryString = window.location.search;

@@ -11,6 +11,12 @@ import io
 from flask import send_file
 from deepface import DeepFace
 from PIL import Image
+from werkzeug.utils import secure_filename
+from web3 import Web3
+import os
+from math import radians,cos,sin,sqrt,atan2
+
+
 app = Flask(__name__)
 CORS(app,resources={r"/*": {"origins": "*"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///employees.db'
@@ -90,6 +96,8 @@ with app.app_context():
     #db.drop_all()  # Optionally drop all tables if you want a fresh start
     
     db.create_all()
+    
+
     
     
 
@@ -554,43 +562,88 @@ def get_requests():
     requests_list = [model_to_dict(req) for req in all_requests]
     return jsonify(requests_list), 200
 
+  # Assuming you have these imports
+
 @app.route('/submit_request', methods=['POST'])
 def submit_request():
     try:
         # Extract data from the form
         data = request.form
-        
+
         # Extract form data with fallbacks
-        request_id = int(data.get('Id'))
-        name = data.get('name', '')
+        request_id = int(data.get('Id', 0))
         dist = float(data.get('dist', 0))
-        time = datetime.utcfromtimestamp(int(data.get('time')) / 1000)
+        time = datetime.utcfromtimestamp(int(data.get('time', 0)) / 1000)
         longitude = float(data.get('longitude', 0))
         latitude = float(data.get('latitude', 0))
         stat = data.get('stat', 'Pending')
 
         # Handle the uploaded photo
-        photo = request.files.get('photo')
-        if not photo:
-            return jsonify({'error': 'Photo is required'}), 400
+        #photo = request.files.get('photo')
+        #read image file string data
+        filestr = request.files['photo'].read()
+        #convert string data to numpy array
+        file_bytes = np.fromstring(filestr, np.uint8)
+        # convert numpy array to image
+        photo = cv2.imdecode(file_bytes, cv2.IMREAD_UNCHANGED)
         
-        # Convert the uploaded photo to an image format (PIL) and then to a NumPy array
-        photo_data = Image.open(io.BytesIO(photo.read()))
-        photo_array = np.array(photo_data)
         
-        # Fetch the employee from the database
+        print(type(photo))
+        
+        #cv2.imshow('winname', photo)
+        # Check if the photo was uploaded
+        '''if not photo:
+            return jsonify({'error': 'Photo is required'}), 400'''
+
+        # Check if the file has a valid image mimetype
+        '''if not photo.mimetype.startswith('image/'):
+            return jsonify({'error': 'Invalid file type. Please upload an image.'}), 400'''
+
+        # Validate uploaded photo
         employee = Employee.query.filter_by(id=request_id).first()
         if not employee:
             return jsonify({"error": "Employee not found"}), 404
+        try:
+            stored_photo_data = Image.open(io.BytesIO(employee.photo))
+            
+            #print('stor',type(stored_photo_data))
+            #stored_photo_data.verify()  # Check if the image is valid
+            stored_photo_array = np.array(stored_photo_data)
+            #print(type(stored_photo_array),'shape',stored_photo_array.shape)
+            stored_photo_array = stored_photo_array[:, :, :3]
+            wowow = cv2.cvtColor(stored_photo_array, cv2.COLOR_RGB2BGR)
+            
+        except Exception as e:
+            return jsonify({'error': f'Failed to process stored employee photo: {str(e)}'}), 500
+        try:
+            photo_array = photo.copy()
+            
+            #print(2)
+            photo_cv = cv2.cvtColor(photo_array, cv2.COLOR_RGB2BGR)
+            
+        # Display the image using OpenCV
+            #cv2.imshow("Uploaded Image", photo_cv)
+              # Close the OpenCV window
+        except Exception as e:
+            return jsonify({'error': f'Invalid uploaded image: {str(e)}'}), 400
+
+        # Fetch the employee from the database
+       
+
+        # Validate stored employee photo
         
-        # Convert stored employee photo from binary to a NumPy array
-        stored_photo_data = Image.open(io.BytesIO(employee.photo))
-        stored_photo_array = np.array(stored_photo_data)
-
+        
         # Verify the photos using DeepFace
-        result = DeepFace.verify(photo_array, stored_photo_array)
-
-        if result["verified"]:
+        try:
+            
+            print(photo_cv.shape,stored_photo_array.shape)
+            result = DeepFace.verify(photo_cv, wowow)
+            print("Verification Result:", result)  # Log the result for debugging
+        except Exception as e:
+            print(e)
+            return jsonify({'error': f'Failed to verify photos: {str(e)}'}), 500
+        #result = DeepFace.verify(photo_cv, stored_photo_array)
+        if result.get("verified"):
             # Add a new log entry if verification is successful
             new_entry = LogInOut(
                 id=request_id,
@@ -602,19 +655,7 @@ def submit_request():
             )
             db.session.add(new_entry)
             db.session.commit()
-            new_entry = LogInOut(
-                id=request_id,
-                dist=dist,
-                time=time,
-                status=True,
-                longi=longitude,
-                lati=latitude
-            )
-            
-            # Add the new entry to the session
-            db.session.add(new_entry)
-            # Commit the transaction
-            db.session.commit()
+
             return jsonify({'message': 'Photos match and logs have been updated'}), 201
         else:
             return jsonify({'message': 'Photos do not match'}), 401
@@ -626,6 +667,7 @@ def submit_request():
 
     finally:
         db.session.close()
+
 
 
 
@@ -683,7 +725,42 @@ def get_photo(employee_id):
         download_name=f"employee_{employee_id}_photo.jpg"
     )
 
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371  # Radius of the Earth in km
+    dLat = radians(lat2 - lat1)
+    dLon = radians(lon2 - lon1)
+    a = sin(dLat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dLon / 2) ** 2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    distance = R * c  # Distance in kilometers
+    return distance
 
+@app.route('/get_nearest_locations', methods=['POST'])
+def get_nearest_locations():
+    # Get current location from the request
+    current_location = request.json
+    current_lat = current_location.get('latitude')
+    current_lon = current_location.get('longitude')
+
+    # Fetch all locations from the database
+    locations = Location.query.all()
+    # Calculate distances
+
+    location_distances = []
+    print
+    for loc in locations:
+        distance = haversine(float(current_lat), float(current_lon), float(loc.latitude), float(loc.longitude))
+        location_distances.append({
+            'name': loc.name,
+            'latitude': loc.latitude,
+            'longitude': loc.longitude,
+            'description': loc.description,
+            'distance': distance
+        })
+
+    # Sort by distance and return the nearest 3 locations
+    location_distances.sort(key=lambda x: x['distance'])
+    nearest_locations = location_distances[:3]
+    return jsonify(nearest_locations)
 
 if __name__ == '__main__':
 #    logging.basicConfig(level=logging.DEBUG)
@@ -710,7 +787,7 @@ if __name__ == '__main__':
             db.session.add(new_employee)
             db.session.commit()
             db.session.close()
-    app.run(host = '192.168.150.122',port = 5000,ssl_context=context)
+    app.run(host = '192.168.0.110',port = 5000,ssl_context=context)
     
 #openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
 #192.168.230.112

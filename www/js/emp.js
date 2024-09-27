@@ -3,6 +3,28 @@
 //const ip_ad="192.168.230.122";
 //const ip_ad="192.168.137.213";
 const ip_ad = sessionStorage.getItem('ip_ad');
+function capturePhoto() {
+          navigator.camera.getPicture(onSuccess2, onError2, {
+            quality: 50,
+            destinationType: Camera.DestinationType.DATA_URL
+          });
+        }
+let imageData = '';
+function onSuccess2(data) {
+    // Store imageData globally for further processing
+    imageData = data;
+    console.log("Captured Image Data:", imageData);
+    document.getElementById('photo').style.display = 'block';
+    document.getElementById('photo').src = "data:image/jpeg;base64," + imageData;
+    sessionStorage.setItem('capturedPhoto', imageData);
+          // After capturing the photo, get the current location
+
+        }
+function onError2(message) {
+          alert('Failed because: ' + message);
+        }
+
+
 document.getElementById('logoutButton').addEventListener('click', async function() {
             try {
                 // Make a request to the logout route on the server
@@ -48,8 +70,7 @@ async function fetchEmployees() {
            const loc = document.getElementById('loc').value;
            const uId = document.getElementById('uid').value;
            const pass = document.getElementById('pass').value;
-           const fileInput = document.getElementById('photoInput');
-           const file = fileInput.files[0];
+
 
            if (!name || !position || !Id || !loc || !uId || !pass) {
                alert('Please enter all required employee details');
@@ -64,10 +85,10 @@ async function fetchEmployees() {
            formData.append('loc', loc);
            formData.append('uId', uId);
            formData.append('pass', pass);
-           if (file) {
-               formData.append('photo', file);
-           }
-
+           const base64Image = imageData.includes(',') ? imageData.split(',')[1] : imageData;
+           const mimeType = "image/jpeg";
+           const photoBlob = base64ToBlob(base64Image, mimeType);
+           formData.append('photo', photoBlob, 'captured_photo.jpg');
            try {
                // Send the form data in a single POST request
                const response = await fetch(`https://${ip_ad}/employees`, {
@@ -172,6 +193,22 @@ async function fetchEmployees() {
          // Fetch employees when the page loads
 */
         window.onload = fetchEmployees;
+function base64ToBlob(base64, mime) {
+    try {
+        console.log("Converting base64 to Blob:", base64);
+
+        // Convert base64 string to byte array
+        const byteString = atob(base64);
+        const ab = new Uint8Array(byteString.length);
+        for (let i = 0; i < byteString.length; i++) {
+            ab[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mime });
+    } catch (error) {
+        console.error("Error in base64ToBlob: Invalid base64 string.", error);
+        return null;
+    }
+}
 
 
 

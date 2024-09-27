@@ -186,8 +186,10 @@
             </div>
 
             <div class="upload-container">
-                <input type="file" id="photoInput" accept="image/*">
+                <button onclick="capturePhoto()">Take Photo</button>
+                <img id="photo" src="" alt="Your Photo" width="200" height="200" style="display:none;">
             </div>
+
 
             <div class="input-container">
                 <label for="pass">Password</label>
@@ -216,8 +218,7 @@
     <h1>Logout</h1>
     <button id="logoutButton">Logout</button>
 </div>
-<script src="emp.js">
-
-</script>
+<script src="emp.js"></script>
+<script src="../cordova.js"></script>
 </body>
 </html>

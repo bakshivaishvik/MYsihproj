@@ -1,33 +1,5 @@
 const ip_ad = sessionStorage.getItem('ip_ad');
 
-document.addEventListener('deviceready', onDeviceReady, false);
-
-function onDeviceReady() {
-    console.log("Device is ready");
-
-    // Enable background mode
-    cordova.plugins.backgroundMode.enable();
-
-    // Listen for background mode activation
-    cordova.plugins.backgroundMode.onactivate = function() {
-        console.log("Background mode activated");
-        runAppInBackground();
-    };
-
-    // Optional: Handle background mode deactivation if needed
-    cordova.plugins.backgroundMode.ondeactivate = function() {
-        console.log("Background mode deactivated");
-    };
-
-    // Run your app's code initially (in case the app is already in the foreground)
-    runAppInBackground();
-}
-
-function runAppInBackground() {
-    getLocation();
-    // Any other functions or code you want to execute in the background
-}
-
 var latitude, longitude, accuracy, timestamp, dist, time, Id;
 
 function getLocation() {
@@ -39,6 +11,26 @@ function getLocation() {
 
     navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 }
+function capturePhoto() {
+          navigator.camera.getPicture(onSuccess2, onError2, {
+            quality: 50,
+            destinationType: Camera.DestinationType.DATA_URL
+          });
+        }
+let imageData = '';
+function onSuccess2(data) {
+    // Store imageData globally for further processing
+    imageData = data;
+    console.log("Captured Image Data:", imageData);
+    document.getElementById('photo').style.display = 'block';
+    document.getElementById('photo').src = "data:image/jpeg;base64," + imageData;
+    sessionStorage.setItem('capturedPhoto', imageData);
+          // After capturing the photo, get the current location
+
+        }
+function onError2(message) {
+          alert('Failed because: ' + message);
+        }
 
 function onSuccess(position) {
     latitude = position.coords.latitude;
@@ -104,7 +96,7 @@ function onSuccess(position) {
             console.log(accuracy);
             let status = dist <= 250 ? 'True' : 'False';
             console.log(dist);
-            if (accuracy < 50) {
+            if (accuracy > 0) {
                 await handleRequestAndPhoto();
             } else {
                 console.log("Not accurate enough");
@@ -153,26 +145,40 @@ document.addEventListener('DOMContentLoaded', function() {
 async function handleRequestAndPhoto() {
     try {
         const formData = new FormData();
-        formData.append('Id', Id || ''); // Ensure Id is not undefined
-        formData.append('dist', dist || ''); // Ensure dist is not undefined
-        formData.append('time', time || ''); // Ensure time is not undefined
-        formData.append('longitude', longitude || ''); // Ensure longitude is not undefined
-        formData.append('latitude', latitude || ''); // Ensure latitude is not undefined
-        formData.append('stat', 'Pending');  // Adjust this as necessary
+        formData.append('Id', Id || '');
+        formData.append('dist', dist || '');
+        formData.append('time', time || '');
+        formData.append('longitude', longitude || '');
+        formData.append('latitude', latitude || '');
+        formData.append('stat', 'Pending');
 
-        const fileInput = document.getElementById('photoInput');
-        const file = fileInput.files[0];
-        if (file) {
-            formData.append('photo', file);
+        // Check if imageData is properly captured
+        //console.log("Image Data Before Conversion:", imageData);
+
+        // Remove the prefix if it exists and convert to Blob
+        const base64Image = imageData.includes(',') ? imageData.split(',')[1] : imageData;
+        //console.log("Base64 Image after split:", base64Image);
+
+        const mimeType = "image/jpeg";
+        const photoBlob = base64ToBlob(base64Image, mimeType);
+
+        // Verify if photoBlob is correctly created
+        if (!photoBlob) {
+            console.error("Failed to convert base64 image to Blob");
+            return;
         }
+
+        // Append the photo blob to formData as a JPEG file
+        formData.append('photo', photoBlob, 'captured_photo.jpg');
+        //console.log("Photo Blob:", photoBlob);
 
         const response = await fetch(`https://${ip_ad}/submit_request`, {
             method: 'POST',
             body: formData
         });
 
-        if (response.status==401) {
-            alert('its not you!!!');
+        if (response.status === 401) {
+            alert('Unauthorized access');
             return;
         }
 
@@ -181,9 +187,24 @@ async function handleRequestAndPhoto() {
         alert("Request and photo sent successfully!");
 
     } catch (error) {
-        //console.error('its not you!!!', error);
-
+        console.error('An error occurred while sending the request:', error);
     }
 }
 
+function base64ToBlob(base64, mime) {
+    try {
+        console.log("Converting base64 to Blob:", base64);
+
+        // Convert base64 string to byte array
+        const byteString = atob(base64);
+        const ab = new Uint8Array(byteString.length);
+        for (let i = 0; i < byteString.length; i++) {
+            ab[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mime });
+    } catch (error) {
+        console.error("Error in base64ToBlob: Invalid base64 string.", error);
+        return null;
+    }
+}
 
