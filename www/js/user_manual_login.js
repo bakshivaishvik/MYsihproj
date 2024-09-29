@@ -178,13 +178,13 @@ async function handleRequestAndPhoto() {
         });
 
         if (response.status === 401) {
-            alert('Unauthorized access');
+            alert('failed to match your face');
             return;
         }
 
         const result = await response.json();
         console.log('Data successfully pushed:', result);
-        alert("Request and photo sent successfully!");
+        alert("faces matched request sent");
 
     } catch (error) {
         console.error('An error occurred while sending the request:', error);

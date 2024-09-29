@@ -210,7 +210,7 @@ def add_location():
 def delete_location(name):
     # Query to get the specific location by id
     location = Location.query.filter_by(name=name).first()
-
+    print(name,location)
     if location is None:
         return jsonify({"error": "Location not found"}), 404
 

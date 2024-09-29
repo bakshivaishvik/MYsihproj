@@ -82,6 +82,45 @@
                 transform: translateY(100vh) rotate(360deg);
             }
         }
+        .bio-data .item {
+            display: flex;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .bio-data .item label {
+            font-weight: bold;
+            width: 120px;
+            color: #333;
+        }
+
+        .bio-data .item span {
+            color: #555;
+            margin-left: 10px;
+        }
+        .logout-container h1::before {
+            content: "\f2f5";
+            font-family: 'FontAwesome';
+            font-size: 1.5rem;
+            color: #dc3545;
+            margin-right: 10px;
+        }
+
+        .logout-container button {
+            background-color: #dc3545;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .logout-container button:hover {
+            background-color: #c82333;
+        }
+
+        .logout-container button:active {
+            background-color: #bd2130;
+        }
 
         .symbol:nth-child(1) { left: 10%; font-size: 40px; animation-duration: 12s; }
         .symbol:nth-child(2) { left: 30%; font-size: 50px; animation-duration: 18s; }
@@ -110,6 +149,32 @@
     <div class="symbol"><i class="fas fa-map-marker-alt"></i></div>
     <div class="symbol"><i class="fas fa-fingerprint"></i></div>
 </div>
+<div class="container">
+    <h1>Employee Bio-Data</h1>
+    <div class="bio-data">
+        <div class="item">
+            <label for="id">ID:</label>
+            <span id="id"></span>
+        </div>
+        <div class="item">
+            <label for="name">Name:</label>
+            <span id="name"></span>
+        </div>
+        <div class="item">
+            <label for="position">Position:</label>
+            <span id="position"></span>
+        </div>
+        <div class="item">
+            <label for="location">Location:</label>
+            <span id="location"></span>
+        </div>
+        <div class="item">
+            <label for="hrswork">Hours worked</label>
+            <span id="hrswork"></span>
+        </div>
+
+    </div>
+<br>
 
 
 <div>
@@ -117,28 +182,15 @@
     <button id="manual_login" class="button">manual login</button>
     <button id="check_logs" class="button">check logs</button>
 </div>
+    <div class="logout-container">
+        <h1 >Logout</h1>
+        <button id="logoutButton">
+            Logout
+        </button>
+    </div>
 
-
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-<script>
-
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const Id = decodeURIComponent(urlParams.get('userId'));
-    document.getElementById('geolocation_based_login').addEventListener('click', function() {
-    console.log("geolog");
-        window.location.href = `getlocation.html?userId=${encodeURIComponent(Id)}`;
-    });
-
-    document.getElementById('manual_login').addEventListener('click', function() {
-    console.log("manlog");
-        window.location.href = `user_manual_login.html?userId=${encodeURIComponent(Id)}`;
-    });
-
-    document.getElementById('check_logs').addEventListener('click', function(){
-    console.log("checklog");
-        window.location.href = `logs_user.html?userId=${encodeURIComponent(Id)}`;
-    });
-</script>
+<script src="userlogin.js"></script>
 </body>
 </html>

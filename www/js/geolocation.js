@@ -107,7 +107,7 @@ function onSuccess(position) {
             let status = dist <= 250 ? 'True' : 'False';
             console.log(dist);
 
-            if (accuracy < 30) {
+            if (accuracy >0) {
                 pushdata(id, dist, timestamp, status, latitude, longitude);
                 return dist;
             } else {
