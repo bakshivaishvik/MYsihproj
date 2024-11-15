@@ -2,216 +2,181 @@
 <html>
 <head>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e9ecef;
-            margin: 0;
-            padding: 20px;
-            animation: fadeIn 1s ease-in-out;
-        }
+        /* General Styling */
+ body {
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+     background-color: #f8f9fa;
+     margin: 0;
+     padding: 20px;
+     animation: fadeIn 1s ease-in-out;
+ }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
+ @keyframes fadeIn {
+     from {
+         opacity: 0;
+     }
+     to {
+         opacity: 1;
+     }
+ }
 
-        .container {
-            max-width: 500px;
-            margin: 40px auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-            animation: slideInUp 1s ease-in-out;
-        }
+ /* Container Styling */
+ .container {
+     max-width: 600px;
+     margin: 40px auto;
+     background-color: #ffffff;
+     padding: 25px;
+     border-radius: 10px;
+     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+     animation: slideInUp 1s ease-in-out;
+ }
 
-        @keyframes slideInUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+ @keyframes slideInUp {
+     from {
+         transform: translateY(30px);
+         opacity: 0;
+     }
+     to {
+         transform: translateY(0);
+         opacity: 1;
+     }
+ }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            position: relative;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+ h1 {
+     text-align: center;
+     color: #333;
+     margin-bottom: 20px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+ }
 
-        h1::before {
-            content: "\f3c5"; /* Map Marker icon from FontAwesome */
-            font-family: 'FontAwesome';
-            font-size: 1.5rem;
-            color: #28a745;
-            margin-right: 10px;
-        }
+ h1::before {
+     content: "\f3c5"; /* Map Marker icon */
+     font-family: 'FontAwesome';
+     font-size: 1.5rem;
+     color: #28a745;
+     margin-right: 10px;
+ }
 
-        .bio-data {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
+ /* Bio Data Section */
+ .bio-data {
+     display: flex;
+     flex-direction: column;
+     margin-bottom: 20px;
+ }
 
-        .bio-data .item {
-            display: flex;
-            margin-top: 10px;
-            font-size: 16px;
-        }
+ .bio-data .item {
+     display: flex;
+     margin-top: 12px;
+     font-size: 16px;
+ }
 
-        .bio-data .item label {
-            font-weight: bold;
-            width: 120px;
-            color: #333;
-        }
+ .bio-data .item label {
+     font-weight: bold;
+     width: 150px;
+     color: #333;
+ }
 
-        .bio-data .item span {
-            color: #555;
-            margin-left: 10px;
-        }
+ .bio-data .item span {
+     color: #555;
+     margin-left: 10px;
+ }
 
-        button {
-            padding: 10px 20px;
-            margin: 10px 0;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px;
-            background-color: #28a745;
-            color: #ffffff;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            align-self: center; /* Center the button */
-            width: 100%; /* Make button full width */
-            max-width: 300px; /* Limit max width */
-        }
+ /* Button Styling */
+ button {
+     padding: 12px 25px;
+     margin: 15px 0;
+     font-size: 16px;
+     font-weight: bold;
+     cursor: pointer;
+     border: none;
+     border-radius: 8px;
+     background-color: #28a745;
+     color: #ffffff;
+     transition: background-color 0.3s ease, transform 0.2s ease;
+     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     width: 100%;
+     max-width: 300px;
+     margin: 20px auto;
+ }
 
-        button i {
-            margin-right: 8px;
-        }
+ button i {
+     margin-right: 10px;
+ }
 
-        button::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0);
-            border-radius: 50%;
-            transition: transform 0.5s, opacity 0.5s;
-        }
+ button:hover {
+     background-color: #218838;
+     transform: translateY(-2px);
+ }
 
-        button:hover {
-            background-color: #218838;
-            transform: translateY(-2px);
-        }
+ button:active {
+     background-color: #1e7e34;
+     transform: translateY(0);
+ }
 
-        button:active::after {
-            transform: translate(-50%, -50%) scale(2);
-            opacity: 0;
-        }
+ /* Image Preview */
+ #photo {
+     display: none;
+     margin-top: 20px;
+     max-width: 100%;
+     border-radius: 8px;
+ }
 
-        button:active {
-            background-color: #1e7e34;
-            transform: translateY(0);
-        }
+ /* Logout Section */
+ .logout-container {
+     margin-top: 30px;
+     text-align: center;
+ }
 
-        #map {
-            height: 300px;
-            margin-top: 10px;
-            border-radius: 8px;
-        }
+ .logout-container h1 {
+     margin-bottom: 20px;
+     font-size: 22px;
+     color: #dc3545;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+ }
 
-        .logout-container {
-            margin-top: 40px;
-            text-align: center; /* Center the logout container */
-        }
+ .logout-container h1::before {
+     content: "\f2f5"; /* Logout icon */
+     font-family: 'FontAwesome';
+     font-size: 1.5rem;
+     color: #dc3545;
+     margin-right: 10px;
+ }
 
-        .logout-container h1 {
-            margin-bottom: 20px;
-            font-size: 22px;
-            color: #dc3545;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+ .logout-container button {
+     background-color: #dc3545;
+     width: 100%;
+     max-width: 300px;
+     display: block;
+     margin: 0 auto;
+     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+ }
 
-        .logout-container h1::before {
-            content: "\f2f5"; /* Sign Out icon from FontAwesome */
-            font-family: 'FontAwesome';
-            font-size: 1.5rem;
-            color: #dc3545;
-            margin-right: 10px;
-        }
+ .logout-container button:hover {
+     background-color: #c82333;
+ }
 
-        .logout-container button {
-            background-color: #dc3545;
-            width: 100%; /* Make button full width */
-            max-width: 300px; /* Limit max width */
-            display: block; /* Center the button */
-            margin: 0 auto;
-        }
+ .logout-container button:active {
+     background-color: #bd2130;
+ }
 
-        .logout-container button:hover {
-            background-color: #c82333;
-        }
+ /* Responsive Design */
+ @media (max-width: 600px) {
+     .container {
+         padding: 15px;
+     }
 
-        .logout-container button:active {
-            background-color: #bd2130;
-        }
-
-        .container ul {
-            padding-left: 20px;
-            list-style-type: none;
-        }
-
-        .container ul li {
-            padding: 8px 0;
-            position: relative;
-            animation: fadeInUp 1s ease-in-out;
-        }
-
-        .container ul li::before {
-            content: "\f3c5"; /* Map Marker icon from FontAwesome */
-            font-family: 'FontAwesome';
-            font-size: 1rem;
-            color: #28a745;
-            position: absolute;
-            left: -20px;
-            top: 5px;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
+     button {
+         max-width: 100%;
+         padding: 12px;
+     }
+ }
     </style>
 
     <title>user page</title>
