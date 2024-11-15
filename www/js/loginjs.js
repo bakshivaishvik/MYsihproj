@@ -4,7 +4,7 @@ sessionStorage.setItem('ip_ad', '192.168.0.110:5000');
     async function checkValid() {
         const ip_ad = sessionStorage.getItem('ip_ad');
 
-        //const ip_ad = "65.2.40.201";
+        //const ip_ad = "13.201.189.64";
         //const ip_ad="192.168.137.213";
         console.log('checkValid function called');
         const username = document.getElementById('loginId').value;
